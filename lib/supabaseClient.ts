@@ -8,4 +8,5 @@ const client = createClient<Database>(
   process.env.NEXT_PUBLIC_SB_ANON_KEY || ``
 );
 
+
 export default client;

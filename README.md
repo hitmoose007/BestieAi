@@ -45,3 +45,7 @@ pnpm dev
 The app should be up and running at http://localhost:3000.
 
 Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=edge-middleware-eap) ([Documentation](https://nextjs.org/docs/deployment)).
+
+## typescript supabase command to create types
+
+npx supabase gen types typescript --project-id fijznrzhrlanavbkigzu --schema public > src/lib/db_types.ts
