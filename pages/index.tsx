@@ -4,7 +4,7 @@ import { Chat } from "../components/Chat";
 function Home() {
   return (
     <div className="w-full h-screen flex">
-      <div className="w-1/2 p-4 border-r-2  ">
+      <div className="w-1/2 p-4 border-r-2 bg-zinc-300 ">
         <Chat />
       </div>
 

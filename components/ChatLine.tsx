@@ -58,15 +58,22 @@ export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
         <div className="float-right mb-5 rounded-lg bg-white py-2 shadow-lg ring-1 ring-zinc-100 sm:px-6">
           <div className="flex space-x-3">
             <div className="flex-1 gap-4 space-y-2">
-              <p className="font-large text-xxl text-gray-900">
-                <span className="hover:underline text-sm">
+              <p className="font-large text-xxl text-gray-900 flex space-x-2">
+                <span>
+                  <img
+                    className="h-5 w-5 rounded-full"
+                    src={role == 'assistant' ? '/images/ai.png' : 'images/pic.png'}
+                    alt=""
+                  />
+                </span>
+                <span className="hover:underline text-sm font-thin">
                   {role == 'assistant' ? 'AI' : 'You'}
                 </span>
               </p>
               <p
                 className={clsx(
                   'text ',
-                  role == 'assistant' ? 'font-semibold font- ' : 'text-gray-400'
+                  role == 'assistant' ? 'font-semibold font- ' : 'text-gray-700'
                 )}
               >
                 {content}
