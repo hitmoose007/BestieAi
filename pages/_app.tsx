@@ -10,9 +10,14 @@ import Header from "../components/Header";
 function App({ Component, pageProps }: AppProps) {
   const Layout = getLayout<LayoutProps>(Component);
 
+  const generateTasks = () => {
+    console.log("Generate Tasks");
+    //will get the generated tasks and then pass them to the TodoList component
+  };
+
   return (
     <>
-      <Header title="Avatar" />
+      <Header title="Avatar" generateTasks={generateTasks}/>
       <Component {...pageProps} />
     </>
   );
