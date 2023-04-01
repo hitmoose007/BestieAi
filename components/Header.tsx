@@ -6,8 +6,8 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
-    <header className="shadow-xl flex fixed w-screen">
-      <section className="w-1/2 bg-zinc-700 p-5 text-white">
+    <header className="flex fixed w-screen bg-zinc-300">
+      <section className="w-1/2 p-5 text-white">
         <span className="py-2 px-4 bg-white shadow-lg rounded-lg text-zinc-700"> Avatar</span>
       </section>
       <section className="p-5">
