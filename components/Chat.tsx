@@ -119,8 +119,8 @@ export function Chat() {
   };
 
   return (
-    <div className="rounded-2xl border border-zinc-300 bg-zinc-200 p-6 pt-14 flex flex-col">
-      <div className="overflow-y-scroll scrollbar-thin max-h-[calc(100vh-9rem)] min-h-[calc(100vh-9rem)]">
+    <div className="rounded-2xl border border-zinc-300 bg-zinc-200 p-6 mt-16 flex flex-col h-[calc(100vh-6rem)]">
+      <div className="overflow-y-scroll scrollbar-thin max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]">
         <div className="flex-grow">
           {messages.map(({ content, role }, index) => (
             <ChatLine key={index} role={role} content={content} />
