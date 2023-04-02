@@ -1,6 +1,7 @@
 import { Layout, Text, Page } from "@vercel/examples-ui";
 import { Chat } from "../components/Chat";
 import TodoList from "../components/Todo";
+import { useState } from "react";
 
 function Home() {
   const data = [
@@ -109,6 +110,14 @@ function Home() {
     },
   ];
 
+  const [tasks, setTasks] = useState(data);
+
+  const handleTaskDelete = (index: number) => {
+    const updatedTasks = [...tasks];
+    updatedTasks.splice(index, 1);
+    setTasks(updatedTasks);
+  };
+
   return (
     <div className="w-full h-screen flex">
       <div className="w-1/2 p-3 bg-zinc-300 ">
@@ -117,8 +126,13 @@ function Home() {
 
       <div className="w-1/2 p-3 bg-zinc-300 ">
         <div className="bg-white mt-16 overflow-y-scroll scrollbar-thin rounded-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]">
-          {data.map((data, index) => (
-            <TodoList key={index} data={data} />
+          {tasks.map((tasks, index) => (
+            <TodoList
+              key={index}
+              data={tasks}
+              handleTaskDelete={handleTaskDelete}
+              index={index}
+            />
           ))}
         </div>
       </div>

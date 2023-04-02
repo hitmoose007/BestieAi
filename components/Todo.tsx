@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
+import { AiFillDelete } from "react-icons/ai";
 
 type Subtask = {
   name: string;
@@ -12,9 +13,11 @@ type Props = {
     task_name: string;
     subtasks: Subtask[];
   };
+  handleTaskDelete: (index: number) => void;
+  index: number;
 };
 
-const TodoList: React.FC<Props> = ({ data }) => {
+const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
   const [subtasks, setSubtasks] = useState<Subtask[]>(data.subtasks);
   const [isDone, setIsDone] = useState<boolean>(
     data.subtasks.every((subtask) => subtask.done)
@@ -43,6 +46,14 @@ const TodoList: React.FC<Props> = ({ data }) => {
     setIsDone(updatedSubtasks.every((subtask) => subtask.done));
   };
 
+
+  const handleSubtaskDelete = (index: number) => {
+    const updatedSubtasks = [...subtasks];
+    updatedSubtasks.splice(index, 1);
+    setSubtasks(updatedSubtasks);
+    setIsDone(updatedSubtasks.every((subtask) => subtask.done));
+  };
+
   return (
     <div className="rounded-2xl bg-white0 p-6 mt-5 flex flex-col">
       <div className="font-bold text-gray-800 text-lg flex items-center justify-between">
@@ -55,15 +66,19 @@ const TodoList: React.FC<Props> = ({ data }) => {
           <div className="flex text-2xl">
             {showSubtasks ? (
               <IoIosArrowDropup
-                className="text-gray-500 cursor-pointer"
+                className="text-gray-500 cursor-pointer m-1"
                 onClick={() => setShowSubtasks(false)}
               />
             ) : (
               <IoIosArrowDropdown
-                className="text-gray-500 cursor-pointer"
+                className="text-gray-500 cursor-pointer m-1"
                 onClick={() => setShowSubtasks(true)}
               />
             )}
+            <AiFillDelete
+                className="text-gray-500 cursor-pointer m-1"
+                 onClick={() => handleTaskDelete(index)}
+                />
           </div>
         </div>
         <div className="flex">
@@ -95,6 +110,10 @@ const TodoList: React.FC<Props> = ({ data }) => {
               >
                 {subtask.name}
               </span>
+              <AiFillDelete
+                className="text-red-500 cursor-pointer ml-2 m-1"    
+                onClick={() => handleSubtaskDelete(index)}
+                />
             </li>
           ))}
         </ul>
