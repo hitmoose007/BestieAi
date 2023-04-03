@@ -53,6 +53,10 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
     <div className="rounded-2xl bg-white0 p-6 mt-5 flex flex-col">
       <div className="font-bold text-gray-800 text-lg flex items-center justify-between">
         <div className="flex space-x-2">
+          <FiXCircle
+              className="text-red-500 cursor-pointer m-1 hover:text-black"
+               onClick={() => handleTaskDelete(index)}
+              />
           <span
             className={isDone ? "line-through text-gray-500" : "text-gray-800"}
           >
@@ -70,10 +74,6 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
                 onClick={() => setShowSubtasks(true)}
               />
             )}
-            <FiXCircle
-                className="text-gray-500 cursor-pointer m-1 hover:text-black"
-                 onClick={() => handleTaskDelete(index)}
-                />
           </div>
         </div>
         <div className="flex">

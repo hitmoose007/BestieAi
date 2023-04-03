@@ -7,7 +7,6 @@ function Home() {
   const data = [
     {
       task_name: "Plan a trip to Austin, TX",
-      id: 1,
       subtasks: [
         {
           name: "Book flights",
@@ -37,6 +36,74 @@ function Home() {
           name: "Create a daily itinerary",
           description:
             "Organize your activities, attractions, and meals into a daily schedule to make the most of your time in Austin.",
+          done: false,
+        },
+      ],
+    },
+    {
+      task_name: "Spring cleaning",
+      subtasks: [
+        {
+          name: "Clean out closet",
+          description:
+            "Sort through clothes and donate or discard items that are no longer needed.",
+          done: false,
+        },
+        {
+          name: "Organize bookshelf",
+          description: "Arrange books by author, genre, or color.",
+          done: false,
+        },
+        {
+          name: "Deep clean bathroom",
+          description:
+            "Scrub the bathtub, sink, and toilet; mop the floor; and wipe down surfaces.",
+          done: false,
+        },
+        {
+          name: "Clean windows",
+          description: "Wash windows and clean blinds or curtains.",
+          done: false,
+        },
+        {
+          name: "Dust and vacuum",
+          description:
+            "Dust surfaces and vacuum carpets, rugs, and upholstery.",
+          done: false,
+        },
+      ],
+    },
+    {
+      task_name: "Learn a new language",
+      subtasks: [
+        {
+          name: "Choose a language",
+          description:
+            "Decide which language to learn based on personal interests or professional goals.",
+          done: false,
+        },
+        {
+          name: "Find resources",
+          description:
+            "Research language-learning resources such as textbooks, online courses, and language exchange programs.",
+          done: false,
+        },
+        {
+          name: "Practice speaking and writing",
+          description:
+            "Improve speaking and writing skills by practicing with native speakers or language exchange partners.",
+          done: false,
+        },
+        {
+          name: "Watch foreign films",
+          description:
+            "Improve listening skills by watching foreign films or TV shows with subtitles.",
+          done: false,
+        },
+        {
+          name: "Take a trip to a country where the language is spoken",
+          description:
+            "Immerse oneself in the language and culture by taking a trip to a country where the language is spoken.",
           done: false,
         },
       ],
