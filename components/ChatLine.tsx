@@ -64,8 +64,8 @@ export function ChatLine({
       <BalancerWrapper>
         <div className="float-right mb-5 rounded-lg bg-white py-2 shadow-lg ring-1 ring-zinc-100 sm:px-6">
           <div className="flex space-x-3">
-            <div className="flex-1 gap-4 space-y-2">
-              <p className="font-large text-xxl text-gray-900 flex space-x-2">
+            <div className="flex-1 gap-4 space-y-2 ">
+              <p className="font-large text-xxl text-gray-900 flex space-x-2 w-20">
                 <span>
                   <img
                     className="h-5 w-5 rounded-full"
