@@ -10,14 +10,49 @@ import Header from "../components/Header";
 function App({ Component, pageProps }: AppProps) {
   const Layout = getLayout<LayoutProps>(Component);
 
-  const generateTasks = () => {
-    console.log("Generate Tasks");
-    //will get the generated tasks and then pass them to the TodoList component
+  const generateTasks = async () => {
+    try {
+      const messageResponse = await fetch("/api/loadChat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          offset: 0,
+        }),
+      });
+
+      if (!messageResponse.ok) {
+        throw new Error(messageResponse.statusText);
+      }
+
+      const messageData = await messageResponse.json();
+
+      const taskResponse = await fetch("/api/generateTasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Chat_History: messageData.chatHistoryData,
+        }),
+      });
+
+      if (!taskResponse.ok) {
+        throw new Error(taskResponse.statusText);
+      }
+
+      const taskData = await taskResponse.json();
+
+      console.log(taskData);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <>
-      <Header title="Avatar" generateTasks={generateTasks}/>
+      <Header title="Avatar" generateTasks={generateTasks} />
       <Component {...pageProps} />
     </>
   );
