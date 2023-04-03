@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Configuration, OpenAIApi } from 'openai';
+import { NextApiRequest, NextApiResponse } from "next";
+import { Configuration, OpenAIApi } from "openai";
 
-import supabaseClient from '../../lib/supabaseClient';
+import supabaseClient from "../../lib/supabaseClient";
 
 const config = new Configuration({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
@@ -14,18 +14,19 @@ export default async function sendTextToAvatar(
   res: NextApiResponse
 ) {
   try {
-    const hardCodedUserId = 'clf24ucm50000l208pkomy8ze';
+    const hardCodedUserId = "clf24ucm50000l208pkomy8ze";
     const hardCodedAvatarId = 1;
-    const { data: chatHistoryData, error:chatHistoryError } = await supabaseClient
-      .from('Chat_History').select('user_message, agent_message')
-        .eq('userId', hardCodedUserId)
-        .eq('avatarId', hardCodedAvatarId)
-        .order('created_at', { ascending: false}).limit(10);
-     
-    
-    //insert embedding of user message and agent message into database
-
+    const { data: chatHistoryData, error: chatHistoryError } =
+      await supabaseClient
+        .from("Chat_History")
+        .select("user_message, agent_message")
+        .eq("userId", hardCodedUserId)
+        .eq("avatarId", hardCodedAvatarId)
+        .order("created_at", { ascending: false })
   
+        .range(req.body["offset"], req.body["offset"] + 10);
+
+    //insert embedding of user message and agent message into database
 
     res.status(200).json({ chatHistoryData });
   } catch (error: unknown) {
@@ -34,7 +35,7 @@ export default async function sendTextToAvatar(
       res.status(500).json({ error: error.message });
     } else {
       // handle error of unknown type
-      res.status(500).json({ error: 'Unknown error occurred' });
+      res.status(500).json({ error: "Unknown error occurred" });
     }
   }
 }
