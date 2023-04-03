@@ -1,30 +1,26 @@
 import React from "react";
+import { FaUser, FaListUl } from "react-icons/fa";
 
 interface HeaderProps {
   title: string;
-  generateTasks: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, generateTasks }) => {
+const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
-    <header className="flex fixed w-screen bg-zinc-300">
-      <section className="w-1/2 p-5 text-white">
-        <span className=" py-2 px-4 border-white border rounded-lg bg-white text-zinc-700">
+    <nav className="flex fixed w-full bg-blue-500 p-4">
+      <div className="w-1/2 text-gray-700">
+        <FaUser className="inline-block align-middle mr-2 text-3xl" />
+        <span className="inline-block align-middle font-semibold text-xl">
           Avatar
         </span>
-      </section>
-      <section className="p-2 w-1/2 flex justify-between items-center">
-        <span className="py-2 px-4 border-white bg-white border rounded-lg text-zinc-700">
+      </div>
+      <div className="w-1/2 flex justify-end items-center">
+        <span className="mr-4 text-gray-500">
+          <FaListUl className="inline-block align-middle mr-2 text-2xl" />
           Todo List
         </span>
-        <button
-          className="py-2 px-4 mr-2 bg-white border-zinc-400 border-2 shadow-xl cursor-pointer hover:shadow-md hover:bg-zinc-400 hover:text-white rounded-lg text-zinc-700"
-          onClick={() => generateTasks()}
-        >
-          Generate Tasks
-        </button>
-      </section>
-    </header>
+      </div>
+    </nav>
   );
 };
 
