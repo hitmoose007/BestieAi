@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
-import { AiFillDelete } from "react-icons/ai";
+import {FiXCircle } from "react-icons/fi";
 
 type Subtask = {
   name: string;
@@ -12,6 +12,7 @@ type Props = {
   data: {
     task_name: string;
     subtasks: Subtask[];
+    id: number;
   };
   handleTaskDelete: (index: number) => void;
   index: number;
@@ -47,12 +48,6 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
   };
 
 
-  const handleSubtaskDelete = (index: number) => {
-    const updatedSubtasks = [...subtasks];
-    updatedSubtasks.splice(index, 1);
-    setSubtasks(updatedSubtasks);
-    setIsDone(updatedSubtasks.every((subtask) => subtask.done));
-  };
 
   return (
     <div className="rounded-2xl bg-white0 p-6 mt-5 flex flex-col">
@@ -63,20 +58,20 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
           >
             {data.task_name}
           </span>
-          <div className="flex text-2xl">
+          <div className="flex text-xl">
             {showSubtasks ? (
               <IoIosArrowDropup
-                className="text-gray-500 cursor-pointer m-1"
+                className="text-gray-500 cursor-pointer m-1  hover:text-black"
                 onClick={() => setShowSubtasks(false)}
               />
             ) : (
               <IoIosArrowDropdown
-                className="text-gray-500 cursor-pointer m-1"
+                className="text-gray-500 cursor-pointer m-1   hover:text-black"
                 onClick={() => setShowSubtasks(true)}
               />
             )}
-            <AiFillDelete
-                className="text-gray-500 cursor-pointer m-1"
+            <FiXCircle
+                className="text-gray-500 cursor-pointer m-1 hover:text-black"
                  onClick={() => handleTaskDelete(index)}
                 />
           </div>
@@ -110,10 +105,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
               >
                 {subtask.name}
               </span>
-              <AiFillDelete
-                className="text-red-500 cursor-pointer ml-2 m-1"    
-                onClick={() => handleSubtaskDelete(index)}
-                />
+
             </li>
           ))}
         </ul>
