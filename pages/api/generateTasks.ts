@@ -14,7 +14,7 @@ export default async function generateTasks(
   res: NextApiResponse
 ) {
   try {
-    req.body["userMessage"] = req.body["userMessage"].replace(/\n/g, " ");
+    // req.body["userMessage"] = req.body["userMessage"].replace(/\n/g, " ");
 
     const hardCodedUserId = "clf24ucm50000l208pkomy8ze";
     const hardCodedAvatarId = 1;
@@ -25,8 +25,8 @@ export default async function generateTasks(
         .select("user_message, agent_message")
         .eq("userId", hardCodedUserId)
         .eq("avatarId", hardCodedAvatarId)
-        .order("created_at", { ascending: true });
-
+        .limit(10)
+        .order("created_at", { ascending: false });
     if (chatHistoryError) {
       throw new Error(chatHistoryError.message);
     }
@@ -65,9 +65,10 @@ export default async function generateTasks(
             '}," +' +
             "]" +
             "}" +
+            "Remember you are sending the response to a devloper so only make sure to send json in your response nothing else. " +
             "I will now " +
             "provide you with last ten interactions between you the avatar and the user. Use these to generate " +
-            "the tasks for user accordingly. Give me your response in json. this is an example format of how you should send " +
+            "the json object and select tasks accordingly." +
             chatHistoryData
               .map((item) => {
                 let combinedMessage =
@@ -81,7 +82,7 @@ export default async function generateTasks(
               .join(" "),
         },
 
-        { role: "user", content: req.body["userMessage"] },
+        { role: "user", content: chatHistoryData[0].user_message || "" },
       ],
     });
 
@@ -92,11 +93,56 @@ export default async function generateTasks(
       throw new Error("No response from OpenAI");
     }
 
- 
     const inputString = content_lines.join("");
-
     const result = JSON.parse(inputString);
 
+    /// add all subtasks to database
+
+    for (let i = 0; i < result.subtasks.length; i++) {
+      const { data: subtaskData, error: subtaskError } = await supabaseClient
+        .from("SubTasks")
+        .insert([
+          {
+            name: result.subtasks[i].name,
+            description: result.subtasks[i].description,
+            userId: hardCodedUserId,
+            avatarId: hardCodedAvatarId,
+          },
+        ])
+        .select("id");
+
+      if (subtaskError) {
+        throw new Error(subtaskError.message);
+      }
+
+      //insert subtaskData id into result
+
+      result.subtasks[i].id = subtaskData[0].id;
+    }
+
+    // add all tasks to database
+
+    const { data: taskData, error: taskError } = await supabaseClient
+
+      .from("Tasks")
+      .insert([
+        {
+          name: result.task_name,
+          userId: hardCodedUserId,
+          avatarId: hardCodedAvatarId,
+        },
+      ])
+      .select("id");
+
+    if (taskError) {
+      throw new Error(taskError.message);
+    }
+
+    //insert taskData id into result
+
+    result.task_id = taskData[0].id;
+
+    // add all task_subtask to database
 
     res.status(200).json({ result });
   } catch (error: unknown) {

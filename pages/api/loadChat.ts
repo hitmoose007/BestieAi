@@ -20,7 +20,7 @@ export default async function sendTextToAvatar(
       .from('Chat_History').select('user_message, agent_message')
         .eq('userId', hardCodedUserId)
         .eq('avatarId', hardCodedAvatarId)
-        .order('created_at', { ascending: true }).limit(10);
+        .order('created_at', { ascending: false}).limit(10);
      
     
     //insert embedding of user message and agent message into database
