@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "./Button";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { useCookies } from "react-cookie";
@@ -14,12 +14,13 @@ export const initialMessages: ChatGPTMessage[] = [
   },
 ];
 
-const InputMessage = ({ input, setInput, sendMessage }: any) => (
+const InputMessage = ({ input, setInput, sendMessage, disabled }: any) => (
   <div className=" flex clear-both bottom-5">
     <input
       type="text"
       aria-label="chat input"
       required
+      disabled={disabled}
       className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 sm:text-sm"
       value={input}
       onKeyDown={(e) => {
@@ -50,14 +51,82 @@ export function Chat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [cookie, setCookie] = useCookies([COOKIE_NAME]);
+  const [offset, setOffset] = useState(0);
+  
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    console.log("The ref is: ", messagesEndRef.current)
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+  
 
   useEffect(() => {
     if (!cookie[COOKIE_NAME]) {
-      // generate a semi random short id
       const randomId = Math.random().toString(36).substring(7);
       setCookie(COOKIE_NAME, randomId);
     }
+
   }, [cookie, setCookie]);
+
+  useEffect(() => {
+    const fetchMessageHistory = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/loadChat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            cookie: cookie[COOKIE_NAME],
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+  
+        const data = await response.json();
+        console.log(data.chatHistoryData);
+        data.chatHistoryData.forEach((item: any) => {
+          setMessages((prev) => [
+            ...prev,
+            { role: "user", content: item.user_message },
+            {
+              role: "assistant",
+              content: item.agent_message,
+            },
+          ]);
+        });
+  
+        console.log(messages);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
+  
+    fetchMessageHistory();
+    const handleScroll = () => {
+      const container = document.getElementById("container");
+      if (container) {
+        if (container.scrollTop === 0) {
+          setOffset(offset + 1);
+        }
+      }
+    };
+    document.getElementById("container")?.addEventListener("scroll", handleScroll);
+    return () => {
+      document.getElementById("container")?.removeEventListener("scroll", handleScroll);
+    };
+
+  }, [offset]);
+  //offset++ when user scrolls to top of chat
+      
 
   // send message to API /api/chat endpoint
   const sendMessage = async (message: string) => {
@@ -120,10 +189,12 @@ export function Chat() {
 
   return (
     <div className="rounded-2xl bg-white border p-6 mt-16 flex flex-col h-[calc(100vh-6rem)]">
-      <div className="overflow-y-scroll scrollbar-thin max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]">
+      <div id="container" className="overflow-y-scroll scrollbar-thin max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]">
         <div className="flex-grow">
           {messages.map(({ content, role }, index) => (
-            <ChatLine key={index} role={role} content={content} />
+            <ChatLine key={index} role={role} content={content} 
+            forwardRef={messagesEndRef}
+            />
           ))}
 
           {loading && <LoadingChatLine />}
@@ -133,6 +204,7 @@ export function Chat() {
               Type a message to start the conversation
             </span>
           )}
+          <div />
         </div>
       </div>
       <div className="flex-shrink-0">
@@ -140,6 +212,7 @@ export function Chat() {
           input={input}
           setInput={setInput}
           sendMessage={sendMessage}
+          disabled={loading}
         />
       </div>
     </div>

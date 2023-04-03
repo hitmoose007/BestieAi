@@ -1,15 +1,17 @@
-import clsx from 'clsx'
-import Balancer from 'react-wrap-balancer'
+import clsx from "clsx";
+import Balancer from "react-wrap-balancer";
 
 // wrap Balancer to remove type errors :( - @TODO - fix this ugly hack
-const BalancerWrapper = (props: any) => <Balancer {...props} />
+const BalancerWrapper = (props: any) => <Balancer {...props} />;
 
-type ChatGPTAgent = 'user' | 'system' | 'assistant'
+type ChatGPTAgent = "user" | "system" | "assistant";
 
 export interface ChatGPTMessage {
-  role: ChatGPTAgent
-  content: string
+  role: ChatGPTAgent;
+  content: string;
+  ref?: React.RefObject<HTMLDivElement> | React.MutableRefObject<HTMLDivElement>;
 }
+
 
 // loading placeholder animation for the chat line
 export const LoadingChatLine = () => (
@@ -31,28 +33,33 @@ export const LoadingChatLine = () => (
       </div>
     </div>
   </div>
-)
+);
 
 // util helper to convert new lines to <br /> tags
 const convertNewLines = (text: string) =>
-  text.split('\n').map((line, i) => (
+  text.split("\n").map((line, i) => (
     <span key={i}>
       {line}
       <br />
     </span>
-  ))
+  ));
 
-export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
+export function ChatLine({
+  role = "assistant",
+  content,
+  ref,
+  forwardRef,
+}: ChatGPTMessage & { forwardRef?: React.ForwardedRef<HTMLDivElement> }) {
   if (!content) {
-    return null
+    return null;
   }
-  const formatteMessage = convertNewLines(content)
-
+  const formatteMessage = convertNewLines(content);
   return (
     <div
       className={
-        role != 'assistant' ? 'float-right clear-both' : 'float-left clear-both'
+        role != "assistant" ? "float-right clear-both" : "float-left clear-both"
       }
+      ref={forwardRef || ref}
     >
       <BalancerWrapper>
         <div className="float-right mb-5 rounded-lg bg-white py-2 shadow-lg ring-1 ring-zinc-100 sm:px-6">
@@ -62,18 +69,20 @@ export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
                 <span>
                   <img
                     className="h-5 w-5 rounded-full"
-                    src={role == 'assistant' ? '/images/ai.png' : 'images/pic.png'}
+                    src={
+                      role == "assistant" ? "/images/ai.png" : "images/pic.png"
+                    }
                     alt=""
                   />
                 </span>
                 <span className="hover:underline text-sm font-thin">
-                  {role == 'assistant' ? 'AI' : 'You'}
+                  {role == "assistant" ? "AI" : "You"}
                 </span>
               </p>
               <p
                 className={clsx(
-                  'text ',
-                  role == 'assistant' ? 'font-semibold font- ' : 'text-gray-700'
+                  "text ",
+                  role == "assistant" ? "font-semibold font- " : "text-gray-700"
                 )}
               >
                 {content}
@@ -83,5 +92,5 @@ export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
         </div>
       </BalancerWrapper>
     </div>
-  )
+  );
 }
