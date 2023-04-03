@@ -48,4 +48,4 @@ Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&ut
 
 ## typescript supabase command to create types
 
-npx supabase gen types typescript --project-id fijznrzhrlanavbkigzu --schema public > src/lib/db_types.ts
+npx supabase gen types typescript --project-id fijznrzhrlanavbkigzu --schema public > lib/db_types.ts
