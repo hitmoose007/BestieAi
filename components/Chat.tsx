@@ -4,7 +4,6 @@ import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { useCookies } from "react-cookie";
 import { AiOutlineEnter } from "react-icons/ai";
 
-const COOKIE_NAME = "nextjs-example-ai-chat-gpt3";
 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
@@ -50,27 +49,24 @@ export function Chat() {
   const [messages, setMessages] = useState<ChatGPTMessage[]>(initialMessages);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [cookie, setCookie] = useCookies([COOKIE_NAME]);
   const [offset, setOffset] = useState(0);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    console.log("The ref is: ", messagesEndRef.current)
+    console.log("The ref is: ", messagesEndRef.current);
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
-  
 
-  useEffect(() => {
-    if (!cookie[COOKIE_NAME]) {
-      const randomId = Math.random().toString(36).substring(7);
-      setCookie(COOKIE_NAME, randomId);
+
+  const handleScroll = (e: React.UIEvent<HTMLElement>) => {
+    if (e.currentTarget.scrollTop === 0) {
+      setOffset(offset + 10);
+
     }
-
-  }, [cookie, setCookie]);
-
+  };
   useEffect(() => {
     const fetchMessageHistory = async () => {
       try {
@@ -81,52 +77,31 @@ export function Chat() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            cookie: cookie[COOKIE_NAME],
+            offset: offset,
           }),
         });
-  
+
         if (!response.ok) {
           throw new Error(response.statusText);
         }
-  
+
         const data = await response.json();
-        console.log(data.chatHistoryData);
         data.chatHistoryData.forEach((item: any) => {
           setMessages((prev) => [
-            ...prev,
             { role: "user", content: item.user_message },
-            {
-              role: "assistant",
-              content: item.agent_message,
-            },
+            { role: "assistant", content: item.agent_message },
+            ...prev,
           ]);
         });
-  
-        console.log(messages);
+
         setLoading(false);
       } catch (error) {
         console.error(error);
         setLoading(false);
       }
     };
-  
     fetchMessageHistory();
-    const handleScroll = () => {
-      const container = document.getElementById("container");
-      if (container) {
-        if (container.scrollTop === 0) {
-          setOffset(offset + 1);
-        }
-      }
-    };
-    document.getElementById("container")?.addEventListener("scroll", handleScroll);
-    return () => {
-      document.getElementById("container")?.removeEventListener("scroll", handleScroll);
-    };
-
-  }, [offset]);
-  //offset++ when user scrolls to top of chat
-      
+  },[offset]);
 
   // send message to API /api/chat endpoint
   const sendMessage = async (message: string) => {
@@ -189,11 +164,18 @@ export function Chat() {
 
   return (
     <div className="rounded-2xl bg-white border p-6 mt-16 flex flex-col h-[calc(100vh-6rem)]">
-      <div id="container" className="overflow-y-scroll scrollbar-thin max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]">
+      <div
+        id="container"
+        className="overflow-y-scroll scrollbar-thin max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]"
+        onScroll={handleScroll}
+      >
         <div className="flex-grow">
           {messages.map(({ content, role }, index) => (
-            <ChatLine key={index} role={role} content={content} 
-            forwardRef={messagesEndRef}
+            <ChatLine
+              key={index}
+              role={role}
+              content={content}
+              forwardRef={messagesEndRef}
             />
           ))}
 
