@@ -122,11 +122,11 @@ function Home() {
 
   return (
     <div className="w-full h-screen flex">
-      <div className="w-1/2 p-2 bg-zinc-300 ">
+      <div className="w-1/2 px-2 bg-zinc-300 ">
         <Chat />
       </div>
 
-      <div className="w-1/2 p-2 bg-zinc-300 ">
+      <div className="w-1/2 px-2 bg-zinc-300 ">
         <div
           className="bg-white mt-16 overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
           onScroll={handleScroll}
