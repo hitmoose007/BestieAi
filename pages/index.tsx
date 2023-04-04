@@ -105,7 +105,7 @@ function Home() {
 
       <div className="w-1/2 p-2 bg-zinc-300 ">
         <div
-          className="bg-white mt-16 overflow-y-scroll scrollbar-thin rounded-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
+          className="bg-white mt-16 overflow-y-scroll scrollbar-thin scrollbar-thumb-slate-600 rounded-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
           onScroll={handleScroll}
         >
           <div className="flex py-4 px-8  justify-end">
