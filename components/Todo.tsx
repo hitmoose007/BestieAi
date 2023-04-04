@@ -98,7 +98,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
 
 
   return (
-    <div className="rounded-2xl bg-white0 p-6 mt-5 flex flex-col">
+    <div className={`rounded-2xl bg-white p-6 m-5 flex flex-col ${index===0?"border-b-2":""} border-red-600 `}>
       <div className="font-bold text-gray-800 text-lg flex items-center justify-between">
         <div className="flex space-x-2">
           <FiXCircle
@@ -122,6 +122,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
                 onClick={() => setShowSubtasks(true)}
               />
             )}
+            {index===0 && <span className="text-red-500 border-red-500 ml-2 mb-2 text-xs">New!</span>}
           </div>
         </div>
         <div className="flex">
