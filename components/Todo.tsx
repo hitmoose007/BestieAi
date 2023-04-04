@@ -5,14 +5,15 @@ import {FiXCircle } from "react-icons/fi";
 type Subtask = {
   name: string;
   description: string;
-  done: boolean;
+  id: boolean;
+  completed: boolean;
 };
 
 type Props = {
   data: {
     task_name: string;
     subtasks: Subtask[];
-    id: number;
+    task_id: number;
   };
   handleTaskDelete: (index: number) => void;
   index: number;
@@ -21,7 +22,7 @@ type Props = {
 const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
   const [subtasks, setSubtasks] = useState<Subtask[]>(data.subtasks);
   const [isDone, setIsDone] = useState<boolean>(
-    data.subtasks.every((subtask) => subtask.done)
+    data.subtasks.every((subtask) => subtask.completed)
   );
   const [showSubtasks, setShowSubtasks] = useState<boolean>(false);
 
@@ -42,9 +43,9 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
 
   const handleSubtaskChange = (index: number) => {
     const updatedSubtasks = [...subtasks];
-    updatedSubtasks[index].done = !updatedSubtasks[index].done;
+    updatedSubtasks[index].completed = !updatedSubtasks[index].completed;
     setSubtasks(updatedSubtasks);
-    setIsDone(updatedSubtasks.every((subtask) => subtask.done));
+    setIsDone(updatedSubtasks.every((subtask) => subtask.completed));
   };
 
 
@@ -95,12 +96,12 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
               <input
                 type="checkbox"
                 className="mr-3"
-                checked={subtask.done}
+                checked={subtask.completed}
                 onChange={() => handleSubtaskChange(index)}
               />
               <span
                 className={
-                  subtask.done ? "line-through text-gray-500" : "text-gray-800"
+                  subtask.completed ? "line-through text-gray-500" : "text-gray-800"
                 }
               >
                 {subtask.name}
