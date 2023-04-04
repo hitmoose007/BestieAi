@@ -13,12 +13,12 @@ export default async function updataSubTaskStatus(
         .from("SubTasks")
         .update({ completed: req.body["completed"] })
         .eq("id", req.body["id"]);
-    
+        console.log(req.body["id"])
         if (subTaskError) {
         throw new Error(subTaskError.message);
         }
-    
-        res.status(200).json({ subTaskData });
+        const message= "Successfully updated subtask with id: "+req.body["id"]
+        res.status(200).json({ message});
     } catch (error: unknown) {
         if (error instanceof Error) {
         // handle error of type Error

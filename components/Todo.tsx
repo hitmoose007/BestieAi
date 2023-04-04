@@ -29,7 +29,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
   const handleMainTaskChange = () => {
     const updatedSubtasks = subtasks.map((subtask) => ({
       ...subtask,
-      done: !isDone,
+      completed: !isDone,
     }));
     setSubtasks(updatedSubtasks);
     setIsDone(!isDone);
@@ -39,14 +39,61 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
         ? data.task_name
         : `${data.task_name} - Mark as Done`;
     }
+    
+    updatedSubtasks.forEach((subtask) => {
+      const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          id: subtask.id, 
+          completed: subtask.completed 
+        })
+      };
+      
+      fetch(`/api/updateSubTaskStatus`, requestOptions)
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error(error));
+    });
+
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: data.task_id,
+        completed: !isDone
+      })
+
+    }
+    fetch(`/api/updataTaskStatus`, requestOptions)
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+
   };
+  
 
   const handleSubtaskChange = (index: number) => {
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[index].completed = !updatedSubtasks[index].completed;
     setSubtasks(updatedSubtasks);
     setIsDone(updatedSubtasks.every((subtask) => subtask.completed));
+  
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        id: updatedSubtasks[index].id, 
+        completed: updatedSubtasks[index].completed 
+      })
+    };
+    
+    fetch(`/api/updateSubTaskStatus`, requestOptions)
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
   };
+  
 
 
 
@@ -78,9 +125,6 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
           </div>
         </div>
         <div className="flex">
-          <p className="font-thin mr-2">
-            {isDone ? "Mark as Incomplete" : "Mark as Complete"}
-          </p>
           <input
             type="checkbox"
             className="m-2"

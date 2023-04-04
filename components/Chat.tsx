@@ -134,7 +134,7 @@ export function Chat() {
     <div className="rounded-2xl bg-white border p-6 mt-16 flex flex-col h-[calc(100vh-6rem)]">
       <div
         id="container"
-        className="overflow-y-scroll scrollbar-thin scrollbar-thumb-slate-600 max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]"
+        className="overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]"
         onScroll={handleScroll}
       >
         <div className="flex-grow">

@@ -17,8 +17,8 @@ export default async function updataTaskStatus(
         if (taskError) {
         throw new Error(taskError.message);
         }
-    
-        res.status(200).json({ taskData });
+        const message= "Successfully updated task with id: "+req.body["id"]
+        res.status(200).json({ message });
     } catch (error: unknown) {
         if (error instanceof Error) {
         // handle error of type Error

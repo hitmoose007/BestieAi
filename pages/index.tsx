@@ -89,6 +89,29 @@ function Home() {
     const updatedTasks = [...tasks];
     updatedTasks.splice(index, 1);
     setTasks(updatedTasks);
+    //api call to delete task
+    const task_id = tasks[index].task_id;
+    fetch("/api/deleteTask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: task_id,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
@@ -105,21 +128,20 @@ function Home() {
 
       <div className="w-1/2 p-2 bg-zinc-300 ">
         <div
-          className="bg-white mt-16 overflow-y-scroll scrollbar-thin scrollbar-thumb-slate-600 rounded-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
+          className="bg-white mt-16 overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
           onScroll={handleScroll}
         >
           <div className="flex py-4 px-8  justify-end">
-            {
-              loading &&
+            {loading && (
               <div
-              className="w-8 h-8 rounded-full animate-spin my-1 mx-2
+                className="w-8 h-8 rounded-full animate-spin my-1 mx-2
               border-2 border-solid border-zinc-600 border-t-transparent"
               ></div>
-            }
+            )}
             <button
               disabled={loading}
               onClick={generateTasks}
-              className="bg-transparent hover:bg-zinc-700 text-zinc-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+              className="bg-transparent hover:bg-zinc-700 text-zinc-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded disabled:text-gray-500 disabled:cursor-not-allowed disabled:hover:text-gray-500 disabled:hover:bg-white"
             >
               Generate Tasks
             </button>
