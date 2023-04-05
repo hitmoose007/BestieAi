@@ -122,8 +122,6 @@ function Home() {
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const element = e.target as HTMLElement;
-    console.log(`scrollTop: ${element.scrollHeight - element.scrollTop}`);
-    console.log(`clientHeight: ${element.clientHeight}`);
     setTimeout(() => {
       if (
         Math.ceil(element.scrollHeight - element.scrollTop) ===

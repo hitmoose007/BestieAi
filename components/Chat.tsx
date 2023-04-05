@@ -16,9 +16,10 @@ export function Chat() {
   const [offset, setOffset] = useState(0);
   const [fetching , setFetching] = useState(false);
 
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
+  
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -45,6 +46,7 @@ export function Chat() {
     if (e.currentTarget.scrollTop === 0) {
       setOffset(offset + 10);
     }
+
   };
   useEffect(() => {
     const fetchMessageHistory = async () => {
@@ -80,6 +82,11 @@ export function Chat() {
       }
     };
     fetchMessageHistory();
+    //the screen will be on the last message in array of loaded messages
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+
   }, [offset]);
 
   return (
