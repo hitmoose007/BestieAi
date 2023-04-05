@@ -4,25 +4,9 @@ import TodoList from "../components/Todo";
 import { useState, useEffect } from "react";
 
 function Home() {
-  const data = [
-    {
-      task_id: 38,
-      task_name: "Identify user's need",
-      task_completed: false,
-      subtasks: [
-        {
-          subtask_id: 182,
-          subtask_name: "Determine topic",
-          subtask_description:
-            "Understand what topic or subject the user wants to discuss or needs assistance with.",
-          subtask_completed: false,
-        },
-      ],
-    },
-    // add more tasks here if needed
-  ];
 
-  const [tasks, setTasks] = useState(data);
+
+  const [tasks, setTasks] = useState<any[]>([]);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [gen, setGen] = useState(false);

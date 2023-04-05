@@ -82,10 +82,7 @@ export function Chat() {
       }
     };
     fetchMessageHistory();
-    //the screen will be on the last message in array of loaded messages
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
+
 
   }, [offset]);
 
@@ -98,7 +95,7 @@ export function Chat() {
         onScroll={handleScroll}
       >
         <div className="flex-grow">
-          {loading && (
+          {fetching && (
             <div className="flex flex-auto flex-col justify-center items-center p-4 md:p-5">
               <div className="flex justify-center">
                 <div
@@ -121,7 +118,7 @@ export function Chat() {
             />
           ))}
 
-          {fetching && <LoadingChatLine />}
+          {loading && <LoadingChatLine />}
 
           {messages.length < 2 && (
             <span className="mx-auto flex flex-grow text-gray-600 clear-both">
