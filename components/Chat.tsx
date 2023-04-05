@@ -16,6 +16,7 @@ export function Chat() {
   const [offset, setOffset] = useState(0);
   const [disabled, setDisabled] = useState(false);
 
+  console.log('hello')
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];

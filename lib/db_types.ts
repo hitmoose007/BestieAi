@@ -1,5 +1,4 @@
-
- export interface Database {
+export interface Database {
   public: {
     Tables: {
       _prisma_migrations: {
@@ -382,6 +381,7 @@
           description: string | null
           id: number
           name: string | null
+          taskId: number | null
           userId: string | null
         }
         Insert: {
@@ -391,6 +391,7 @@
           description?: string | null
           id?: number
           name?: string | null
+          taskId?: number | null
           userId?: string | null
         }
         Update: {
@@ -400,6 +401,7 @@
           description?: string | null
           id?: number
           name?: string | null
+          taskId?: number | null
           userId?: string | null
         }
       }
@@ -410,7 +412,6 @@
           created_at: string | null
           id: number
           name: string | null
-          subTaskId: number | null
           userId: string | null
         }
         Insert: {
@@ -419,7 +420,6 @@
           created_at?: string | null
           id?: number
           name?: string | null
-          subTaskId?: number | null
           userId?: string | null
         }
         Update: {
@@ -428,7 +428,6 @@
           created_at?: string | null
           id?: number
           name?: string | null
-          subTaskId?: number | null
           userId?: string | null
         }
       }
@@ -477,6 +476,21 @@
       [_ in never]: never
     }
     Functions: {
+      get_tasks_with_subtasks: {
+        Args: {
+          user_id: string
+          avatar_id: number
+          offset_value: number
+        }
+        Returns: {
+          task_id: number
+          task_name: string
+          task_completed: boolean
+          subtask_id: number
+          subtask_name: string
+          subtask_completed: boolean
+        }[]
+      }
       hello: {
         Args: Record<PropertyKey, never>
         Returns: string

@@ -51,7 +51,7 @@ export default async function generateTasks(
             "their goals. You will provide recommendations and support to help them achieve this. As a system" +
             "-based task manager, you will always keep track of the user's progress and remind them of " +
             "upcoming deadlines or tasks that need to be completed.  Must include a Subtask description but not a task description " +
-            "as Description and Task Name as Name with Subtask as the title for each Subtask." +
+            "as Description and Task Name as Name with Subtask as the title for each Subtask. Always make sure your response is in the style of json object below." +
             "{" +
             '"task_name": "Plan a trip to Austin, TX",' +
             '"subtasks": [' +
@@ -95,34 +95,7 @@ export default async function generateTasks(
 
     const inputString = content_lines.join("");
     const result = JSON.parse(inputString);
-
-    /// add all subtasks to database
-
-    for (let i = 0; i < result.subtasks.length; i++) {
-      const { data: subtaskData, error: subtaskError } = await supabaseClient
-        .from("SubTasks")
-        .insert([
-          {
-            name: result.subtasks[i].name,
-            description: result.subtasks[i].description,
-            userId: hardCodedUserId,
-            avatarId: hardCodedAvatarId,
-          },
-        ])
-        .select("id");
-
-      if (subtaskError) {
-        throw new Error(subtaskError.message);
-      }
-
-      //insert subtaskData id into result
-
-      result.subtasks[i].id = subtaskData[0].id;
-    }
-
-    // add all tasks to database
-
-    const { data: taskData, error: taskError } = await supabaseClient
+     const { data: taskData, error: taskError } = await supabaseClient
 
       .from("Tasks")
       .insert([
@@ -141,6 +114,35 @@ export default async function generateTasks(
     //insert taskData id into result
 
     result.task_id = taskData[0].id;
+
+    /// add all subtasks to database
+
+    for (let i = 0; i < result.subtasks.length; i++) {
+      const { data: subtaskData, error: subtaskError } = await supabaseClient
+        .from("SubTasks")
+        .insert([
+          {
+            name: result.subtasks[i].name,
+            description: result.subtasks[i].description,
+            userId: hardCodedUserId,
+            avatarId: hardCodedAvatarId,
+            taskId: result.task_id,
+          },
+        ])
+        .select("id");
+
+      if (subtaskError) {
+        throw new Error(subtaskError.message);
+      }
+
+      //insert subtaskData id into result
+
+      result.subtasks[i].id = subtaskData[0].id;
+    }
+
+    // add all tasks to database
+
+   
 
     // add all task_subtask to database
 
