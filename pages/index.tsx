@@ -25,6 +25,7 @@ function Home() {
   const [tasks, setTasks] = useState(data);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [gen, setGen] = useState(false);
 
   useEffect(() => {
     const fetchTaskHistory = async () => {
@@ -59,6 +60,7 @@ function Home() {
         });
 
         setLoading(false);
+        console.log("Loading tasks: ", loading)
       } catch (error) {
         console.error(error);
         setLoading(false);
@@ -68,7 +70,7 @@ function Home() {
   }, [offset]);
 
   const generateTasks = () => {
-    setLoading(true);
+    setGen(true);
     fetch("/api/generateTasks", {
       method: "POST",
       headers: {
@@ -84,11 +86,11 @@ function Home() {
       .then((data) => {
         console.log(data.result);
         setTasks((prev) => [data.result, ...prev]);
-        setLoading(false);
+        setGen(false);
       })
       .catch((error) => {
         console.error(error);
-        setLoading(false);
+        setGen(false);
       });
   };
 
@@ -127,7 +129,7 @@ function Home() {
         Math.ceil(element.scrollHeight - element.scrollTop) ===
         element.clientHeight
       ) {
-        setOffset(offset + 10);
+        setOffset(offset + 1);
       }
     }, 2000);
   };
@@ -163,19 +165,20 @@ function Home() {
             </svg>
             <span className='px-2'>Generate Tasks</span>
           </button>
+          <div className='flex  justify-end'>
+            {gen && (
+              <div
+                className='w-5 h-5 mt-3 rounded-full animate-spin my-1 mx-2
+              border-2 border-solid border-zinc-600 border-t-transparent'
+              ></div>
+            )}
+          </div>
         </div>
         <div
           className='bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]'
           onScroll={(e) => handleScroll(e)}
         >
-          <div className='flex py-4 px-8  justify-end'>
-            {loading && (
-              <div
-                className='w-8 h-8 rounded-full animate-spin my-1 mx-2
-              border-2 border-solid border-zinc-600 border-t-transparent'
-              ></div>
-            )}
-          </div>
+
 
           {tasks.map((tasks, index) => (
             <TodoList
