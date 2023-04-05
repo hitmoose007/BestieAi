@@ -16,7 +16,7 @@ type Props = {
     task_completed: boolean;
     subtasks: Subtask[];
   };
-  handleTaskDelete: (index: number) => void;
+  handleTaskDelete: (id: number) => void;
   index: number;
 };
 
@@ -134,7 +134,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
         <div className="flex">
           <FiXCircle
             className="text-red-500 cursor-pointer m-1 hover:text-black"
-            onClick={() => handleTaskDelete(index)}
+            onClick={() => handleTaskDelete(data.task_id)}
           />
         </div>
       </div>

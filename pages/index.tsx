@@ -92,19 +92,17 @@ function Home() {
       });
   };
 
-  const handleTaskDelete = (index: number) => {
-    const updatedTasks = [...tasks];
-    updatedTasks.splice(index, 1);
+  const handleTaskDelete = (id: number) => {
+    const updatedTasks = tasks.filter(task => task.task_id !== id);
     setTasks(updatedTasks);
     //api call to delete task
-    const task_id = tasks[index].task_id;
     fetch("/api/deleteTask", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: task_id,
+        id: id,
       }),
     })
       .then((res) => {
@@ -120,6 +118,7 @@ function Home() {
         console.error(error);
       });
   };
+
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const element = e.target as HTMLElement;
@@ -173,7 +172,7 @@ function Home() {
           </div>
           {tasks.map((tasks, index) => (
             <TodoList
-              key={index}
+              key={tasks.task_id}
               data={tasks}
               handleTaskDelete={handleTaskDelete}
               index={index}
