@@ -43,7 +43,6 @@ function Home() {
         });
 
         setLoading(false);
-        console.log("Loading tasks: ", loading);
       } catch (error) {
         console.error(error);
         setLoading(false);
