@@ -56,12 +56,12 @@ export default async function generateTasks(
             '"task_name": "Plan a trip to Austin, TX",' +
             '"subtasks": [' +
             "{" +
-            '"name": "Book flights",' +
-            '"description": "Find and book the most suitable and affordable flights to Austin."' +
+            '"subtask_name": "Book flights",' +
+            '"subtask_description": "Find and book the most suitable and affordable flights to Austin."' +
             "}," +
             "{" +
-            '"name": "Find accommodations",' +
-            '"description": "Research and book suitable accommodations in Austin for the duration of your stay."' +
+            '"subtask_name": "Find accommodations",' +
+            '"subtask_description": "Research and book suitable accommodations in Austin for the duration of your stay."' +
             '}," +' +
             "]" +
             "}" +
@@ -137,7 +137,7 @@ export default async function generateTasks(
 
       //insert subtaskData id into result
 
-      result.subtasks[i].id = subtaskData[0].id;
+      result.subtasks[i].subtask_id = subtaskData[0].id;
     }
 
     // add all tasks to database
