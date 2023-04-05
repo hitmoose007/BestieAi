@@ -12,9 +12,9 @@ export const initialMessages: ChatGPTMessage[] = [
 
 export function Chat() {
   const [messages, setMessages] = useState<ChatGPTMessage[]>(initialMessages);
-  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
+  const [disabled, setDisabled] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -74,6 +74,7 @@ export function Chat() {
   // send message to API /api/chat endpoint
   const sendMessage = async (message: string) => {
     setLoading(true);
+    setDisabled(true);
     const newMessages = [
       ...messages,
       { role: "user", content: message } as ChatGPTMessage,
@@ -127,11 +128,12 @@ export function Chat() {
       ]);
 
       setLoading(false);
+      setDisabled(false);
     }
   };
 
   return (
-    <div className="rounded-2xl bg-white border p-6 mt-16 flex flex-col h-[calc(100vh-6rem)]">
+    <div className="rounded-b-2xl bg-white border p-6 flex flex-col h-[calc(100vh-6rem)]">
       <div
         id="container"
         className="overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]"
@@ -183,10 +185,8 @@ export function Chat() {
       </div>
       <div className="flex-shrink-0">
         <InputMessage
-          input={input}
-          setInput={setInput}
           sendMessage={sendMessage}
-          disabled={loading}
+          disabled={disabled}
         />
       </div>
     </div>
