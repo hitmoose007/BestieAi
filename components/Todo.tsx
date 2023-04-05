@@ -30,7 +30,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
   const handleMainTaskChange = () => {
     const updatedSubtasks = subtasks.map((subtask) => ({
       ...subtask,
-      completed: !isDone,
+      subtask_completed: !isDone,
     }));
     setSubtasks(updatedSubtasks);
     setIsDone(!isDone);
@@ -47,7 +47,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: subtask.subtask_id,
-          completed: subtask.completed,
+          completed: subtask.subtask_completed,
         }),
       };
 

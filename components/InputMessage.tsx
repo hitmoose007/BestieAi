@@ -15,7 +15,7 @@ export function InputMessage({setMessages, messages, setLoading }: any) {
       { role: "user", content: message } as ChatGPTMessage,
     ];
     setMessages(newMessages);
-    // const last10messages = newMessages.slice(-10); // remember last 10 messages
+    setInput("");
 
     const response = await fetch("/api/sendTextToAvatar", {
       method: "POST",
@@ -24,8 +24,7 @@ export function InputMessage({setMessages, messages, setLoading }: any) {
       },
       body: JSON.stringify({
         userMessage: message,
-        // last10messages,
-        // cookie: cookie[COOKIE_NAME],
+
       }),
     });
 
@@ -33,7 +32,6 @@ export function InputMessage({setMessages, messages, setLoading }: any) {
     console.log("This is the response: ", response.body);
 
     if (!response.ok) {
-      console.log("hello");
       throw new Error(response.statusText);
     }
 
@@ -78,7 +76,6 @@ export function InputMessage({setMessages, messages, setLoading }: any) {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             sendMessage(input);
-            setInput("");
           }
         }}
         onChange={(e) => {
