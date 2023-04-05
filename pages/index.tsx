@@ -148,7 +148,7 @@ function Home() {
 
       <div className='w-1/2 px-2 pt-12  '>
         <div className='bg-white border-b border-zinc-200 w-full flex rounded-t-2xl  p-2 py-2  '>
-          <button className='bg-green-300 text-green-800 ml-4 font-bold py-2 px-4 rounded-lg flex transition-colors duration-500 ease-in-out hover:bg-green-600 hover:text-white'>
+          <button onClick={()=> generateTasks()} className='bg-green-300 text-green-800 ml-4 font-bold py-2 px-4 rounded-lg flex transition-colors duration-500 ease-in-out hover:bg-green-600 hover:text-white'>
             <svg
               preserveAspectRatio='xMidYMin'
               width='16'

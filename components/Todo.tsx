@@ -139,7 +139,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
         </div>
       </div>
       {showSubtasks && (
-        <ul className="list-disc list-inside mt-4">
+        <ul className="list-disc list-inside mt-4 pl-8">
           {subtasks.map((subtask, index) => (
             <li key={index} className="flex items-center">
               <input
