@@ -1,9 +1,71 @@
 import { Button } from "./Button";
 import { AiOutlineEnter } from "react-icons/ai";
 import { useState } from "react";
+import {type ChatGPTMessage} from "./ChatLine";
 
-export function InputMessage({sendMessage, disabled }: any) {
+export function InputMessage({setMessages, messages, setLoading }: any) {
   const [input, setInput] = useState("");
+  const [disabled, setDisabled] = useState(false);
+
+  const sendMessage = async (message: string) => {
+    setLoading(true);
+    setDisabled(true);
+    const newMessages = [
+      ...messages,
+      { role: "user", content: message } as ChatGPTMessage,
+    ];
+    setMessages(newMessages);
+    // const last10messages = newMessages.slice(-10); // remember last 10 messages
+
+    const response = await fetch("/api/sendTextToAvatar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userMessage: message,
+        // last10messages,
+        // cookie: cookie[COOKIE_NAME],
+      }),
+    });
+
+    console.log("Edge function returned.");
+    console.log("This is the response: ", response.body);
+
+    if (!response.ok) {
+      console.log("hello");
+      throw new Error(response.statusText);
+    }
+
+    // This data is a ReadableStream
+    const data = response.body;
+    if (!data) {
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    let lastMessage = "";
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      const chunkValue = decoder.decode(value);
+
+      lastMessage = lastMessage + chunkValue;
+      const parsed = JSON.parse(lastMessage);
+
+      setMessages([
+        ...newMessages,
+        { role: "assistant", content: parsed.content } as ChatGPTMessage,
+      ]);
+
+      setLoading(false);
+      setDisabled(false);
+    }
+  };
   return (
     <div className=" flex clear-both bottom-5">
       <input
