@@ -142,14 +142,15 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
         <ul className="list-disc list-inside mt-4 pl-8">
           {subtasks.map((subtask, index) => (
             <li key={index} className="flex items-center">
-              <input
+              
+              <div className="flex flex-col">
+                <div>
+               <input
                 type="checkbox"
-                className="mr-3 mb-4"
+                className="mr-3  "
                 checked={subtask.subtask_completed}
                 onChange={() => handleSubtaskChange(index)}
-              />
-              <div className="flex flex-col">
-                <span
+              /> <span
                   className={
                     subtask.subtask_completed
                       ? "line-through text-gray-500"
@@ -157,14 +158,17 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
                   }
                 >
                   {subtask.subtask_name}
-                </span>
+                </span></div>
+
                 <span
                   className={
-                    subtask.subtask_completed
-                      ? "line-through text-gray-500 text-xs"
-                      : "text-gray-500 text-xs"
+                    `ml-8  ${
+                    subtask.subtask_completed 
+                      ? " line-through text-gray-500 text-xs"
+                      : " text-gray-500 text-xs"}`
                   }
                 >
+                    {/* {subtask.subtask_completed && "Completed - "} */}
                   {subtask.subtask_description}
                 </span>
               </div>
