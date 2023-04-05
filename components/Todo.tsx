@@ -30,7 +30,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
   const handleMainTaskChange = () => {
     const updatedSubtasks = subtasks.map((subtask) => ({
       ...subtask,
-      subtask_completed: !isDone,
+      completed: !isDone,
     }));
     setSubtasks(updatedSubtasks);
     setIsDone(!isDone);
@@ -47,7 +47,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: subtask.subtask_id,
-          completed: subtask.subtask_completed,
+          completed: subtask.completed,
         }),
       };
 
@@ -97,7 +97,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
     <div
       className={`rounded-2xl bg-white p-6 m-5 flex flex-col ${
         index === 0 ? "border-b-2" : ""
-      } border-red-600 `}
+      } border-green-600 `}
     >
       <div className="font-bold text-gray-800 text-lg flex items-center justify-between">
         <div className="flex space-x-2">
@@ -125,7 +125,7 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
               />
             )}
             {index === 0 && (
-              <span className="text-red-500 border-red-500 ml-2 mb-2 text-xs">
+              <span className="text-green-500 border-red-500 ml-2 mb-2 text-xs">
                 New!
               </span>
             )}

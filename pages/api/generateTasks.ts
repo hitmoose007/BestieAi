@@ -122,8 +122,8 @@ export default async function generateTasks(
         .from("SubTasks")
         .insert([
           {
-            name: result.subtasks[i].name,
-            description: result.subtasks[i].description,
+            name: result.subtasks[i].subtask_name,
+            description: result.subtasks[i].subtask_description,
             userId: hardCodedUserId,
             avatarId: hardCodedAvatarId,
             taskId: result.task_id,
