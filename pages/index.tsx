@@ -1,4 +1,3 @@
-import { Layout, Text, Page } from "@vercel/examples-ui";
 import { Chat } from "../components/Chat";
 import TodoList from "../components/Todo";
 import { useState, useEffect } from "react";
@@ -193,6 +192,5 @@ function Home() {
   );
 }
 
-Home.Layout = Layout;
 
 export default Home;
