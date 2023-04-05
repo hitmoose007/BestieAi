@@ -2,6 +2,7 @@ import { Layout, Text, Page } from "@vercel/examples-ui";
 import { Chat } from "../components/Chat";
 import TodoList from "../components/Todo";
 import { useState, useEffect } from "react";
+import { FaUser, FaListUl } from "react-icons/fa";
 
 function Home() {
   const data = [
@@ -122,13 +123,23 @@ function Home() {
 
   return (
     <div className="w-full h-screen flex">
-      <div className="w-1/2 px-2 pt-2 bg-zinc-500 ">
+      <div className="w-1/2 px-2 pt-12 bg-zinc-500 ">
+        <span className="bg-white w-full flex rounded-t-2xl p-2 border-b border-zinc-200">
+          <h1 className="inline-block align-middle ml-4 font-semibold text-xl text-zinc-500">
+            Avatar
+          </h1>
+        </span>
         <Chat />
       </div>
 
-      <div className="w-1/2 px-2 pt-2 bg-zinc-500 ">
+      <div className="w-1/2 px-2 pt-12 bg-zinc-500 ">
+        <span className="bg-white border-b border-zinc-200 w-full flex rounded-t-2xl  p-2 ">
+          <h2 className="inline-block align-middle font-semibold text-lg text-zinc-500 ml-4">
+            Todo List
+          </h2>
+        </span>
         <div
-          className="bg-white mt-16 overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
+          className="bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
           onScroll={handleScroll}
         >
           <div className="flex py-4 px-8  justify-end">

@@ -1,7 +1,9 @@
 import { Button } from "./Button";
 import { AiOutlineEnter } from "react-icons/ai";
+import { useState } from "react";
 
-export function InputMessage({ input, setInput, sendMessage, disabled }: any) {
+export function InputMessage({sendMessage, disabled }: any) {
+  const [input, setInput] = useState("");
   return (
     <div className=" flex clear-both bottom-5">
       <input
@@ -9,7 +11,7 @@ export function InputMessage({ input, setInput, sendMessage, disabled }: any) {
         aria-label="chat input"
         required
         disabled={disabled}
-        className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 sm:text-sm"
+        className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 sm:text-sm disabled:bg-gray-100"
         value={input}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
