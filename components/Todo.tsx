@@ -9,7 +9,6 @@ type Subtask = {
   subtask_completed: boolean;
 };
 
-
 type Props = {
   data: {
     task_name: string;
@@ -102,10 +101,12 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
     >
       <div className="font-bold text-gray-800 text-lg flex items-center justify-between">
         <div className="flex space-x-2">
-          <FiXCircle
-            className="text-red-500 cursor-pointer m-1 hover:text-black"
-            onClick={() => handleTaskDelete(index)}
+          <input
+            type="checkbox"
+            checked={isDone}
+            onChange={handleMainTaskChange}
           />
+
           <span
             className={isDone ? "line-through text-gray-500" : "text-gray-800"}
           >
@@ -131,11 +132,9 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
           </div>
         </div>
         <div className="flex">
-          <input
-            type="checkbox"
-            className="m-2"
-            checked={isDone}
-            onChange={handleMainTaskChange}
+          <FiXCircle
+            className="text-red-500 cursor-pointer m-1 hover:text-black"
+            onClick={() => handleTaskDelete(index)}
           />
         </div>
       </div>
@@ -145,19 +144,30 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
             <li key={index} className="flex items-center">
               <input
                 type="checkbox"
-                className="mr-3"
+                className="mr-3 mb-4"
                 checked={subtask.subtask_completed}
                 onChange={() => handleSubtaskChange(index)}
               />
-              <span
-                className={
-                  subtask.subtask_completed
-                    ? "line-through text-gray-500"
-                    : "text-gray-800"
-                }
-              >
-                {subtask.subtask_name}
-              </span>
+              <div className="flex flex-col">
+                <span
+                  className={
+                    subtask.subtask_completed
+                      ? "line-through text-gray-500"
+                      : "text-gray-800"
+                  }
+                >
+                  {subtask.subtask_name}
+                </span>
+                <span
+                  className={
+                    subtask.subtask_completed
+                      ? "line-through text-gray-500 text-xs"
+                      : "text-gray-500 text-xs"
+                  }
+                >
+                  {subtask.subtask_description}
+                </span>
+              </div>
             </li>
           ))}
         </ul>
