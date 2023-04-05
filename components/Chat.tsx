@@ -51,6 +51,7 @@ export function Chat() {
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
 
+  console.log('hello')
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     console.log("The ref is: ", messagesEndRef.current);
