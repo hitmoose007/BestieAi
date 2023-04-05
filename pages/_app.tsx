@@ -13,7 +13,7 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <Header title="Avatar" />
+      {/* <Header title="Avatar" /> */}
       <Component {...pageProps} />
     </>
   );

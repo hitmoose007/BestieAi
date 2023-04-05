@@ -47,7 +47,6 @@ function Home() {
         const data = await response.json();
         console.log(data);
 
-
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -118,41 +117,50 @@ function Home() {
   };
 
   return (
-    <div className="w-full h-screen flex">
-      <div className="w-1/2 px-2 pt-12 bg-zinc-500 ">
-        <span className="bg-white w-full flex rounded-t-2xl p-2 border-b border-zinc-200">
-          <h1 className="inline-block align-middle ml-4 font-semibold text-xl text-zinc-500">
+    <div className='w-full h-screen flex bg-zinc-200'>
+      <div className='w-1/2 px-2 pt-12   '>
+        <span className='bg-white w-full flex rounded-t-2xl p-2 py-4 '>
+          <h1 className='inline-block align-middle ml-4 font-semibold   '>
             Avatar
           </h1>
         </span>
         <Chat />
       </div>
 
-      <div className="w-1/2 px-2 pt-12 bg-zinc-500 ">
-        <span className="bg-white border-b border-zinc-200 w-full flex rounded-t-2xl  p-2 ">
-          <h2 className="inline-block align-middle font-semibold text-lg text-zinc-500 ml-4">
-            Todo List
-          </h2>
-        </span>
-        <div
-          className="bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
-          onScroll={handleScroll}
-        >
-          <div className="flex py-4 px-8  justify-end">
+      <div className='w-1/2 px-2 pt-12  '>
+        <div className='bg-white border-b border-zinc-200 w-full flex rounded-t-2xl  p-2 py-2  '>
+          <button className='bg-green-300 text-green-800 ml-4 font-bold py-2 px-4 rounded-lg flex transition-colors duration-500 ease-in-out hover:bg-green-600 hover:text-white'>
+            <svg
+              preserveAspectRatio='xMidYMin'
+              width='16'
+              height='16'
+              viewBox='0 0 24 24'
+              fill='currentColor'
+              aria-hidden='true'
+              className='mt-1'
+            >
+              <path
+                fill-rule='evenodd'
+                clip-rule='evenodd'
+                d='M20.5929 10.9105C21.4425 11.3884 21.4425 12.6116 20.5929 13.0895L6.11279 21.2345C5.27954 21.7033 4.24997 21.1011 4.24997 20.1451L4.24997 3.85492C4.24997 2.89889 5.27954 2.29675 6.11279 2.76545L20.5929 10.9105Z'
+              ></path>
+            </svg>
+            <span className='px-2'>Generate Tasks</span>
+          </button>
+
+          <div className='flex py-4 px-8  justify-end'>
             {loading && (
               <div
-                className="w-8 h-8 rounded-full animate-spin my-1 mx-2
-              border-2 border-solid border-zinc-600 border-t-transparent"
+                className='w-8 h-8 rounded-full animate-spin my-1 mx-2
+              border-2 border-solid border-zinc-600 border-t-transparent'
               ></div>
             )}
-            <button
-              disabled={loading}
-              onClick={generateTasks}
-              className="bg-transparent hover:bg-zinc-700 text-zinc-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded disabled:text-gray-500 disabled:cursor-not-allowed disabled:hover:text-gray-500 disabled:hover:bg-white"
-            >
-              Generate Tasks
-            </button>
           </div>
+        </div>
+        <div
+          className='bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]'
+          onScroll={handleScroll}
+        >
           {tasks.map((tasks, index) => (
             <TodoList
               key={index}
