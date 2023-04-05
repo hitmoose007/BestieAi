@@ -2,25 +2,20 @@ import { Layout, Text, Page } from "@vercel/examples-ui";
 import { Chat } from "../components/Chat";
 import TodoList from "../components/Todo";
 import { useState, useEffect } from "react";
-import { FaUser, FaListUl } from "react-icons/fa";
 
 function Home() {
   const data = [
     {
       task_id: 38,
       task_name: "Identify user's need",
+      task_completed: false,
       subtasks: [
         {
-          id: 182,
-          name: "Determine topic",
-          description:
+          subtask_id: 182,
+          subtask_name: "Determine topic",
+          subtask_description:
             "Understand what topic or subject the user wants to discuss or needs assistance with.",
-        },
-        {
-          id: 183,
-          name: "Provide relevant advice or assistance",
-          description:
-            "Based on the user's topic or needs, offer helpful guidance and support.",
+          subtask_completed: false,
         },
       ],
     },
@@ -31,35 +26,36 @@ function Home() {
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   const fetchTaskHistory = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await fetch("/api/loadTask", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           offset: offset,
-  //         }),
-  //       });
+  useEffect(() => {
+    const fetchTaskHistory = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/loadTasks", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            offset: offset,
+          }),
+        });
 
-  //       if (!response.ok) {
-  //         throw new Error(response.statusText);
-  //       }
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
 
-  //       const data = await response.json();
-  //       console.log(data);
+        const data = await response.json();
+        console.log(data);
 
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.error(error);
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchTaskHistory();
-  // }, [offset]);
+
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
+    fetchTaskHistory();
+  }, [offset]);
 
   const generateTasks = () => {
     setLoading(true);

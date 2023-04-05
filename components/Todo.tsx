@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
-import {FiXCircle } from "react-icons/fi";
+import { FiXCircle } from "react-icons/fi";
 
 type Subtask = {
-  name: string;
-  description: string;
-  id: boolean;
-  completed: boolean;
+  subtask_id: number;
+  subtask_name: string;
+  subtask_description: string;
+  subtask_completed: boolean;
 };
+
 
 type Props = {
   data: {
     task_name: string;
-    subtasks: Subtask[];
     task_id: number;
+    task_completed: boolean;
+    subtasks: Subtask[];
   };
   handleTaskDelete: (index: number) => void;
   index: number;
@@ -22,7 +24,7 @@ type Props = {
 const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
   const [subtasks, setSubtasks] = useState<Subtask[]>(data.subtasks);
   const [isDone, setIsDone] = useState<boolean>(
-    data.subtasks.every((subtask) => subtask.completed)
+    data.subtasks.every((subtask) => subtask.subtask_completed)
   );
   const [showSubtasks, setShowSubtasks] = useState<boolean>(false);
 
@@ -39,72 +41,71 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
         ? data.task_name
         : `${data.task_name} - Mark as Done`;
     }
-    
+
     updatedSubtasks.forEach((subtask) => {
       const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          id: subtask.id, 
-          completed: subtask.completed 
-        })
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: subtask.subtask_id,
+          completed: subtask.completed,
+        }),
       };
-      
+
       fetch(`/api/updateSubTaskStatus`, requestOptions)
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error(error));
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
     });
 
     const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id: data.task_id,
-        completed: !isDone
-      })
-
-    }
+        completed: !isDone,
+      }),
+    };
     fetch(`/api/updataTaskStatus`, requestOptions)
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error(error));
-
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
   };
-  
 
   const handleSubtaskChange = (index: number) => {
     const updatedSubtasks = [...subtasks];
-    updatedSubtasks[index].completed = !updatedSubtasks[index].completed;
+    updatedSubtasks[index].subtask_completed =
+      !updatedSubtasks[index].subtask_completed;
     setSubtasks(updatedSubtasks);
-    setIsDone(updatedSubtasks.every((subtask) => subtask.completed));
-  
+    setIsDone(updatedSubtasks.every((subtask) => subtask.subtask_completed));
+
     const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        id: updatedSubtasks[index].id, 
-        completed: updatedSubtasks[index].completed 
-      })
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: updatedSubtasks[index].subtask_id,
+        completed: updatedSubtasks[index].subtask_completed,
+      }),
     };
-    
+
     fetch(`/api/updateSubTaskStatus`, requestOptions)
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error(error));
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
   };
-  
-
-
 
   return (
-    <div className={`rounded-2xl bg-white p-6 m-5 flex flex-col ${index===0?"border-b-2":""} border-red-600 `}>
+    <div
+      className={`rounded-2xl bg-white p-6 m-5 flex flex-col ${
+        index === 0 ? "border-b-2" : ""
+      } border-red-600 `}
+    >
       <div className="font-bold text-gray-800 text-lg flex items-center justify-between">
         <div className="flex space-x-2">
           <FiXCircle
-              className="text-red-500 cursor-pointer m-1 hover:text-black"
-               onClick={() => handleTaskDelete(index)}
-              />
+            className="text-red-500 cursor-pointer m-1 hover:text-black"
+            onClick={() => handleTaskDelete(index)}
+          />
           <span
             className={isDone ? "line-through text-gray-500" : "text-gray-800"}
           >
@@ -122,7 +123,11 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
                 onClick={() => setShowSubtasks(true)}
               />
             )}
-            {index===0 && <span className="text-red-500 border-red-500 ml-2 mb-2 text-xs">New!</span>}
+            {index === 0 && (
+              <span className="text-red-500 border-red-500 ml-2 mb-2 text-xs">
+                New!
+              </span>
+            )}
           </div>
         </div>
         <div className="flex">
@@ -141,17 +146,18 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
               <input
                 type="checkbox"
                 className="mr-3"
-                checked={subtask.completed}
+                checked={subtask.subtask_completed}
                 onChange={() => handleSubtaskChange(index)}
               />
               <span
                 className={
-                  subtask.completed ? "line-through text-gray-500" : "text-gray-800"
+                  subtask.subtask_completed
+                    ? "line-through text-gray-500"
+                    : "text-gray-800"
                 }
               >
-                {subtask.name}
+                {subtask.subtask_name}
               </span>
-
             </li>
           ))}
         </ul>
