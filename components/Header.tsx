@@ -1,30 +1,36 @@
 import React from "react";
+import { FaUser, FaListUl } from "react-icons/fa";
 
 interface HeaderProps {
   title: string;
-  generateTasks: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, generateTasks }) => {
+const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
-    <header className="flex fixed w-screen bg-zinc-300">
-      <section className="w-1/2 p-5 text-white">
-        <span className=" py-2 px-4 border-white border rounded-lg bg-white text-zinc-700">
-          Avatar
+    <nav className="flex fixed w-full bg-zinc-500  p-4 ">
+      <div className="w-1/2 flex items-center">
+        <div className="h-8 border-r-2 border-gray-700 pr-4 flex items-center">
+          <FaUser className="inline-block align-middle mr-2 text-3xl text-white" />
+          <h1 className="inline-block align-middle font-semibold text-xl text-white">
+            Avatar
+          </h1>
+        </div>
+        <span className="inline-block align-middle font-semibold text-lg text-white ml-4">
+          What's on your mind?
         </span>
-      </section>
-      <section className="p-2 w-1/2 flex justify-between items-center">
-        <span className="py-2 px-4 border-white bg-white border rounded-lg text-zinc-700">
+      </div>
+      <div className="w-1/2 flex items-center justify-end">
+        <h2 className="inline-block align-middle font-semibold text-lg text-white mr-4">
           Todo List
-        </span>
-        <button
-          className="py-2 px-4 mr-2 bg-white border-zinc-400 border-2 shadow-xl cursor-pointer hover:shadow-md hover:bg-zinc-400 hover:text-white rounded-lg text-zinc-700"
-          onClick={() => generateTasks()}
-        >
-          Generate Tasks
-        </button>
-      </section>
-    </header>
+        </h2>
+        <FaListUl className="inline-block align-middle mr-2 text-2xl text-white" />
+        <div className="h-8 border-l-2 border-gray-700 pl-4 flex items-center">
+          <span className="inline-block align-middle font-semibold text-lg text-white">
+            Here are your tasks
+          </span>
+        </div>
+      </div>
+    </nav>
   );
 };
 
