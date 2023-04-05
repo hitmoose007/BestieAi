@@ -65,7 +65,7 @@ export default async function generateTasks(
             '}," +' +
             "]" +
             "}" +
-            "Remember you are sending the response to a devloper so only make sure to send json in your response nothing else. " +
+            "Remember you are sending the response to a devloper so only make sure to send json in your response nothing else and in the json format i have provided. " +
             "I will now " +
             "provide you with last ten interactions between you the avatar and the user. Use these to generate " +
             "the json object and select tasks accordingly." +

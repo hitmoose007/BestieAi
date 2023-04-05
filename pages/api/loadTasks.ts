@@ -8,6 +8,7 @@ interface Subtask {
   subtask_id: number;
   subtask_name: string;
   subtask_completed: boolean;
+  subtask_description: string;
 }
 
 interface Task {
@@ -42,7 +43,8 @@ export default async function loadTasks(
         acc[index].subtasks.push({
           subtask_id: curr.subtask_id,
           subtask_name: curr.subtask_name,
-          subtask_completed: curr.subtask_completed
+          subtask_completed: curr.subtask_completed,
+          subtask_description: curr.subtask_description
         });
       } else {
         // If the current task ID is not in the accumulator array, create a new task object with a subtask array
@@ -54,7 +56,8 @@ export default async function loadTasks(
             {
               subtask_id: curr.subtask_id,
               subtask_name: curr.subtask_name,
-              subtask_completed: curr.subtask_completed
+              subtask_completed: curr.subtask_completed,
+              subtask_description: curr.subtask_description
             }
           ] : []
         });
