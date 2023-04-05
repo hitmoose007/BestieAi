@@ -8,6 +8,7 @@ interface Subtask {
   subtask_id: number;
   subtask_name: string;
   subtask_completed: boolean;
+  subtask_description: string;
 }
 
 interface Task {
@@ -33,7 +34,7 @@ export default async function loadTasks(
       throw new Error(taskError.message);
     }
 
-    const combinedTasks: Task[] = taskData.reduce((acc: Task[], curr: any) => {
+    const results: Task[] = taskData.reduce((acc: Task[], curr: any) => {
       // Find the index of the current task ID in the accumulator array
       const index = acc.findIndex((task) => task.task_id === curr.task_id);
 
@@ -42,7 +43,8 @@ export default async function loadTasks(
         acc[index].subtasks.push({
           subtask_id: curr.subtask_id,
           subtask_name: curr.subtask_name,
-          subtask_completed: curr.subtask_completed
+          subtask_completed: curr.subtask_completed,
+          subtask_description: curr.subtask_description
         });
       } else {
         // If the current task ID is not in the accumulator array, create a new task object with a subtask array
@@ -54,7 +56,8 @@ export default async function loadTasks(
             {
               subtask_id: curr.subtask_id,
               subtask_name: curr.subtask_name,
-              subtask_completed: curr.subtask_completed
+              subtask_completed: curr.subtask_completed,
+              subtask_description: curr.subtask_description
             }
           ] : []
         });
@@ -64,9 +67,8 @@ export default async function loadTasks(
     }, []);
 
     // Output the combined tasks object
-    console.log(combinedTasks);
 
-    res.status(200).json({ combinedTasks });
+    res.status(200).json({ results });
   } catch (error: unknown) {
     if (error instanceof Error) {
       // handle error of type Error
