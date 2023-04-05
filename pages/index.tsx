@@ -46,7 +46,17 @@ function Home() {
 
         const data = await response.json();
         console.log(data);
-
+        data.results.forEach((item: any) => {
+          setTasks((prev) => [
+            ...prev,
+            {
+              task_id: item.task_id,
+              task_name: item.task_name,
+              task_completed: item.task_completed,
+              subtasks: item.subtasks,
+            },
+          ]);
+        });
 
         setLoading(false);
       } catch (error) {
@@ -112,9 +122,17 @@ function Home() {
   };
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
-    if (e.currentTarget.scrollTop === 0) {
-      setOffset(offset + 10);
-    }
+    const element = e.target as HTMLElement;
+    console.log(`scrollTop: ${element.scrollHeight - element.scrollTop}`);
+    console.log(`clientHeight: ${element.clientHeight}`);
+    setTimeout(() => {
+      if (
+        Math.ceil(element.scrollHeight - element.scrollTop) ===
+        element.clientHeight
+      ) {
+        setOffset(offset + 10);
+      }
+    }, 2000);
   };
 
   return (
@@ -136,7 +154,7 @@ function Home() {
         </span>
         <div
           className="bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
-          onScroll={handleScroll}
+          onScroll={(e) => handleScroll(e)}
         >
           <div className="flex py-4 px-8  justify-end">
             {loading && (
@@ -161,6 +179,19 @@ function Home() {
               index={index}
             />
           ))}
+          {loading && (
+            <div className="flex flex-auto flex-col justify-center items-center p-4 md:p-5">
+              <div className="flex justify-center">
+                <div
+                  className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"
+                  role="status"
+                  aria-label="loading"
+                >
+                  <span className="sr-only">Loading...</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
