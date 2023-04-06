@@ -2,6 +2,8 @@ import { useEffect, useState, useRef,useMemo ,useCallback } from "react";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
 import { ViewportList } from "react-viewport-list";
+//react virtualized
+import { List, AutoSizer } from "react-virtualized";
 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
@@ -85,9 +87,79 @@ export function Chat() {
     fetchMessageHistory();
   }, [offset]);
 
+  const sendMessage = async (message: string) => {
+    setLoading(true);
+    const newMessages = [
+      ...messages,
+      { role: "user", content: message } as ChatGPTMessage,
+    ];
+    setMessages(newMessages);
+
+    const response = await fetch("/api/sendTextToAvatar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userMessage: message,
+
+      }),
+    });
+
+    console.log("Edge function returned.");
+    console.log("This is the response: ", response.body);
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    // This data is a ReadableStream
+    const data = response.body;
+    if (!data) {
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    let lastMessage = "";
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      const chunkValue = decoder.decode(value);
+
+      lastMessage = lastMessage + chunkValue;
+      const parsed = JSON.parse(lastMessage);
+
+      setMessages([
+        ...newMessages,
+        { role: "assistant", content: parsed.content } as ChatGPTMessage,
+      ]);
+
+      setLoading(false);
+    }
+  };
+  // function rowRenderer({ index, key, style }) {
+  //   const item = messages[index];
+  //   return (
+  //     <div key={key} style={style}>
+  //       <ChatLine
+  //         key={index}
+  //         forwardRef={messagesEndRef}
+  //         content={item.content}
+  //         role={item.role}
+  //       />
+  //     </div>
+  //   );
+  // }
   const chatList = useMemo(
     () => (
-      <ViewportList viewportRef={viewRef} items={messages}  scrollThreshold={0.9}>
+      <ViewportList viewportRef={viewRef} items={messages}  scrollThreshold={0.9} //size
+        overscan={10} //size
+        itemSize={100} //size
+        >
         {(item, index) => (
           <ChatLine
             key={index}
@@ -140,9 +212,7 @@ export function Chat() {
       </div>
       <div className="flex-shrink-0">
         <InputMessage
-          setMessages={setMessages}
-          messages={messages}
-          setLoading={setLoading}
+          sendMessage={sendMessage}
         />
       </div>
     </div>
