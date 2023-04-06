@@ -1,4 +1,4 @@
 {
-  "buildCommand": "yarn build",
+  "buildCommand": "yarn run build",
   "ignoreCommand": "yarn dlx vercel-ignore"
 }
