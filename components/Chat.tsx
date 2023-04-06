@@ -87,7 +87,7 @@ export function Chat() {
 
   const chatList = useMemo(
     () => (
-      <ViewportList viewportRef={viewRef} items={messages} itemSize={25} scrollThreshold={0.9}>
+      <ViewportList viewportRef={viewRef} items={messages}  scrollThreshold={0.9}>
         {(item, index) => (
           <ChatLine
             key={index}
