@@ -162,7 +162,7 @@ function Home() {
           {error !== "" && <p className="text-red-500 ml-4 mt-2">{error}</p>}
         </div>
         <div
-          className="bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
+          className="bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-7rem)] min-h-[calc(100vh-7rem)]"
           onScroll={(e) => handleScroll(e)}
         >
           {tasks.map((tasks, index) => (

@@ -87,7 +87,7 @@ export function Chat() {
   }, [offset]);
 
   return (
-    <div className="rounded-b-2xl bg-white border p-6 flex flex-col h-[calc(100vh-6rem)]">
+    <div className="rounded-b-2xl bg-white border p-6 flex flex-col h-[calc(100vh-7rem)]">
       <div
         id="container"
         ref={containerRef}
