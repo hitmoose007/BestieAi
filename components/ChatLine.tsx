@@ -57,7 +57,7 @@ export function ChatLine({
   return (
     <div
       className={
-        role != "assistant" ? "float-right clear-both" : "float-left clear-both"
+        role != "assistant" ? "ml-auto clear-both" : "mr-auto clear-both"
       }
       ref={forwardRef || ref}
     >
