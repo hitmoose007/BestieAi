@@ -1,4 +1,3 @@
-import { Layout, Text, Page } from "@vercel/examples-ui";
 import { Chat } from "../components/Chat";
 import TodoList from "../components/Todo";
 import { useState, useEffect } from "react";
@@ -152,8 +151,8 @@ function Home() {
                 className="mt-1"
               >
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M20.5929 10.9105C21.4425 11.3884 21.4425 12.6116 20.5929 13.0895L6.11279 21.2345C5.27954 21.7033 4.24997 21.1011 4.24997 20.1451L4.24997 3.85492C4.24997 2.89889 5.27954 2.29675 6.11279 2.76545L20.5929 10.9105Z"
                 ></path>
               </svg>
@@ -163,7 +162,7 @@ function Home() {
           {error !== "" && <p className="text-red-500 ml-4 mt-2">{error}</p>}
         </div>
         <div
-          className="bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-6.1rem)] min-h-[calc(100vh-6.1rem)]"
+          className="bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-7rem)] min-h-[calc(100vh-7rem)]"
           onScroll={(e) => handleScroll(e)}
         >
           {tasks.map((tasks, index) => (
@@ -193,6 +192,5 @@ function Home() {
   );
 }
 
-Home.Layout = Layout;
 
 export default Home;

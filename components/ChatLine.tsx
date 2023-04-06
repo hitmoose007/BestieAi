@@ -9,7 +9,6 @@ type ChatGPTAgent = "user" | "system" | "assistant";
 export interface ChatGPTMessage {
   role: ChatGPTAgent;
   content: string;
-  ref?: React.RefObject<HTMLDivElement> | React.MutableRefObject<HTMLDivElement>;
 }
 
 
@@ -47,7 +46,6 @@ const convertNewLines = (text: string) =>
 export function ChatLine({
   role = "assistant",
   content,
-  ref,
   forwardRef,
 }: ChatGPTMessage & { forwardRef?: React.ForwardedRef<HTMLDivElement> }) {
   if (!content) {
@@ -57,9 +55,9 @@ export function ChatLine({
   return (
     <div
       className={
-        role != "assistant" ? "float-right clear-both" : "float-left clear-both"
+        role != "assistant" ? "ml-auto clear-both" : "mr-auto clear-both"
       }
-      ref={forwardRef || ref}
+      ref={forwardRef}
     >
       <BalancerWrapper>
         <div className="float-right mb-5 rounded-lg bg-white py-2 shadow-lg ring-1 ring-zinc-100 sm:px-6">

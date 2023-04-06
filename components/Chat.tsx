@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef,useMemo ,useCallback } from "react";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
+import { ViewportList } from "react-viewport-list";
 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
@@ -14,14 +15,15 @@ export function Chat() {
   const [messages, setMessages] = useState<ChatGPTMessage[]>(initialMessages);
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [fetching , setFetching] = useState(false);
-
+  const [fetching, setFetching] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  
+  const viewRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
+
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === "Enter" && lastMessage && messagesEndRef.current) {
         if (
@@ -46,7 +48,6 @@ export function Chat() {
     if (e.currentTarget.scrollTop === 0) {
       setOffset(offset + 10);
     }
-
   };
   useEffect(() => {
     const fetchMessageHistory = async () => {
@@ -82,12 +83,26 @@ export function Chat() {
       }
     };
     fetchMessageHistory();
-
-
   }, [offset]);
 
+  const chatList = useMemo(
+    () => (
+      <ViewportList viewportRef={viewRef} items={messages}  scrollThreshold={0.9}>
+        {(item, index) => (
+          <ChatLine
+            key={index}
+            forwardRef={messagesEndRef}
+            content={item.content}
+            role={item.role}
+          />
+        )}
+      </ViewportList>
+    ),
+    [messages]
+  );
+
   return (
-    <div className="rounded-b-2xl bg-white border p-6 flex flex-col h-[calc(100vh-6rem)]">
+    <div className="rounded-b-2xl bg-white border p-6 flex flex-col h-[calc(100vh-7rem)]">
       <div
         id="container"
         ref={containerRef}
@@ -108,15 +123,10 @@ export function Chat() {
               </div>
             </div>
           )}
+          <div ref={viewRef} className="flex flex-col">
+            {chatList}
+          </div>
 
-          {messages.map(({ content, role }, index) => (
-            <ChatLine
-              key={index}
-              role={role}
-              content={content}
-              forwardRef={messagesEndRef}
-            />
-          ))}
 
           {loading && <LoadingChatLine />}
 
