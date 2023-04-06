@@ -1,18 +1,25 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Configuration, OpenAIApi } from "openai";
+import { NextResponse } from "next/server";
 
-import supabaseClient from "../../lib/supabaseClient";
+    import { OpenAIStream, OpenAIStreamPayload } from "../../utils/OpenAIStream";
+const { Configuration, OpenAIApi } = require("openai");
+const { createClient } = require("@supabase/supabase-js");
 
-const config = new Configuration({
+const supabaseClient = createClient(
+  process.env.NEXT_PUBLIC_SB_PROJECT_URL || ``,
+  process.env.NEXT_PUBLIC_SB_ANON_KEY || ``
+);
+const aiConfig = new Configuration({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
 });
 
-const openai = new OpenAIApi(config);
+export const config = {
+  runtime: "edge",
+};
 
-export default async function generateTasks(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+const openai = new OpenAIApi(aiConfig);
+
+const handler = async (req: Request): Promise<Response> => {
   try {
     // req.body["userMessage"] = req.body["userMessage"].replace(/\n/g, " ");
 
@@ -30,9 +37,27 @@ export default async function generateTasks(
     if (chatHistoryError) {
       throw new Error(chatHistoryError.message);
     }
+    // const response = await openai.listEngines();
 
-    const completion = await openai.createChatCompletion({
-      model: "gpt-4",
+
+
+//   const { prompt } = (await req.json()) as {
+//     prompt?: string;
+//   };
+
+//   if (!prompt) {
+//     return new Response("No prompt in the request", { status: 400 });
+//   }
+
+ 
+
+    // const completion = await openai.createChatCompletion({
+    //   model: "gpt-3.5-turbo",
+    // });
+
+    //send api request to openai
+const payload: OpenAIStreamPayload = {
+    model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
@@ -43,8 +68,7 @@ export default async function generateTasks(
             ", and assigning them to the user for completion.For example, if a user wants to plan " +
             "a birthday party, you will help them to define the main task, 'plan birthday party" +
             "', and then create subtasks such as 'decide on theme', 'create guest list', 'choose " +
-            "venue', 'order decorations', 'order cake', and 'send invitations'. You will also " +
-            "help the user to set deadlines for each subtask.You will use your conversational abilities to assist " +
+            "venue', 'order decorations', 'order cake', and 'send invitations'.You will use your conversational abilities to assist " +
             "users in completing their tasks and subtasks. For example, you might help them research venues or " +
             "vendors, strategize the order in which to complete tasks, or automate activities to streamline the process" +
             ".Your focus is on ensuring that users complete their tasks and subtasks in a timely manner to reach " +
@@ -70,7 +94,7 @@ export default async function generateTasks(
             "provide you with last ten interactions between you the avatar and the user. Use these to generate " +
             "the json object and select tasks accordingly." +
             chatHistoryData
-              .map((item) => {
+              .map((item: any) => {
                 let combinedMessage =
                   "User: " +
                   item.user_message +
@@ -84,18 +108,31 @@ export default async function generateTasks(
 
         { role: "user", content: chatHistoryData[0].user_message || "" },
       ],
-    });
+    temperature: 0.7,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+    
+    stream: false,
+    n: 1,
+  };
 
-    const content = completion.data.choices[0].message?.content;
+  const content= await OpenAIStream(payload);
+    
+// console.log('hello')
+    // const content = completion.data.choices[0].message?.content;
     const content_lines = content?.split("\n");
 
+    // console.log(content_lines);
     if (!content_lines) {
       throw new Error("No response from OpenAI");
     }
 
     const inputString = content_lines.join("");
+    
     const result = JSON.parse(inputString);
-     const { data: taskData, error: taskError } = await supabaseClient
+    // console.log(result);
+    const { data: taskData, error: taskError } = await supabaseClient
 
       .from("Tasks")
       .insert([
@@ -140,20 +177,37 @@ export default async function generateTasks(
       result.subtasks[i].subtask_id = subtaskData[0].id;
     }
 
-    // add all tasks to database
-
    
+    // const destructure = (obj: any, path: string) => {
+    //     return path.split(".").reduce((acc, part) => acc && acc[part], obj);
+    //     }
+    // const response = destructure(result, "subtasks.0.subtask_id");
+    // console.log(response);
+    // return NextResponse.json({ response });
+    
+ 
+    // const destructure = {
+    //     task_id: result.task_id,
+    //     task_name: result.task_name,
+    //     subtasks: result.subtasks
 
-    // add all task_subtask to database
+    // }
 
-    res.status(200).json({ result });
+    // console.log(destructure);
+    return NextResponse.json({ result });
+
   } catch (error: unknown) {
     if (error instanceof Error) {
       // handle error of type Error
-      res.status(500).json({ error: error.message });
+      return NextResponse.json({ error: error.message }, { status: 500 });
     } else {
       // handle error of unknown type
-      res.status(500).json({ error: "Unknown error occurred" });
+      return NextResponse.json(
+        { error: "Unknown error occurred" },
+        { status: 500 }
+      );
     }
   }
-}
+};
+
+export default handler;
