@@ -1,8 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef,useMemo ,useCallback } from "react";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
 import { ViewportList } from "react-viewport-list";
-import {useMemo } from "react";
 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
@@ -24,6 +23,7 @@ export function Chat() {
 
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
+
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === "Enter" && lastMessage && messagesEndRef.current) {
         if (
@@ -87,11 +87,11 @@ export function Chat() {
 
   const chatList = useMemo(
     () => (
-      <ViewportList viewportRef={viewRef} items={messages} itemSize={10}>
+      <ViewportList viewportRef={viewRef} items={messages} itemSize={25} scrollThreshold={0.9}>
         {(item, index) => (
           <ChatLine
             key={index}
-            ref={messagesEndRef}
+            forwardRef={messagesEndRef}
             content={item.content}
             role={item.role}
           />
