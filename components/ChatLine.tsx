@@ -12,8 +12,9 @@ export interface ChatGPTMessage {
   content: string;
   imageUrl?: string;
   name?: string;
+  defaultAvatar?: string;
+  defaultName?: string;
 }
-
 
 // loading placeholder animation for the chat line
 export const LoadingChatLine = () => (
@@ -49,39 +50,43 @@ const convertNewLines = (text: string) =>
 export function ChatLine({
   role = "assistant",
   content,
-  forwardRef,
   imageUrl,
   name,
+  defaultAvatar,
+  defaultName,
 }: ChatGPTMessage & { forwardRef?: React.ForwardedRef<HTMLDivElement> }) {
   if (!content) {
     return null;
   }
-  console.log("The image url is: ", imageUrl)
+  console.log("Default Avatar: ", defaultAvatar)
   const formatteMessage = convertNewLines(content);
   return (
     <div
       className={
         role != "assistant" ? "ml-auto clear-both" : "mr-auto clear-both"
       }
-      ref={forwardRef}
     >
       <BalancerWrapper>
         <div className="float-right mb-5 rounded-lg bg-white py-2 shadow-lg ring-1 ring-zinc-100 sm:px-6">
           <div className="flex space-x-3">
             <div className="flex-1 gap-4 space-y-2 ">
-              <p className="font-large text-xxl text-gray-900 flex space-x-2 min-w-10">
+              <p
+                className={`font-large text-xxl text-gray-900 flex space-x-2 ${
+                  role == "assistant" ? "min-w-full" : "w-20"
+                }`}
+              >
                 <span>
                   <img
-                    className="h-10 w-10 rounded-full object-cover"
-                    src={
-                      role == "assistant" ? imageUrl : "images/pic.png"
-                    }
+                    className={`rounded-full object-cover ${
+                      role == "assistant" ? "h-10 w-10" : "h-5 w-5"
+                    }`}
+                    src={role === "assistant" ? (imageUrl || defaultAvatar) : "images/pic.png"}
                     alt=""
                   />
                 </span>
 
                 <span className="hover:underline text-sm font-thin">
-                  {role == "assistant" ? name : "You"}
+                  {role == "assistant" ? (name||defaultName) : "You"}
                 </span>
               </p>
               <p

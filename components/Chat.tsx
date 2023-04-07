@@ -19,6 +19,9 @@ export function Chat() {
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
   const [fetching, setFetching] = useState(false);
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  const [defaultAvatar, setDefaultAvatar] = useState("");
+  const [defaultName, setDefaultName] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -26,6 +29,15 @@ export function Chat() {
 
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
+
+    if (lastMessage && messagesEndRef.current && !hasScrolledToBottom) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      console.log("scrolling to", messagesEndRef.current);
+      setHasScrolledToBottom(true);
+      if(offset<=1){
+        setHasScrolledToBottom(false);
+      }
+    }
 
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === "Enter" && lastMessage && messagesEndRef.current) {
@@ -45,7 +57,7 @@ export function Chat() {
     return () => {
       window.removeEventListener("keypress", handleKeyPress);
     };
-  }, [messages, offset]);
+  }, [messages, offset, hasScrolledToBottom]);
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     if (e.currentTarget.scrollTop === 0) {
@@ -78,7 +90,9 @@ export function Chat() {
             { role: "assistant", content: item.agent_message },
             ...prev,
           ]);
-        });
+        }
+        //get default image and name has no
+        );
 
         setFetching(false);
       } catch (error) {
@@ -86,7 +100,36 @@ export function Chat() {
         setFetching(false);
       }
     };
+    const fetchDefaultMessage = async () => {
+      try {
+        setFetching(true);
+        const response = await fetch("/api/defaultAvatar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+        );
+
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        //parse response to json
+        const data = await response.json();
+        console.log(data);
+        setDefaultAvatar(data.image_url);
+        setDefaultName(data.name);
+      }
+      catch (error) {
+        console.error(error);
+        setFetching(false);
+      }
+    };
     fetchMessageHistory();
+    if(offset===0){
+      fetchDefaultMessage();
+    }
+
   }, [offset]);
 
   const sendMessage = async (message: string) => {
@@ -169,16 +212,17 @@ export function Chat() {
         {(item, index) => (
           <ChatLine
             key={index}
-            forwardRef={messagesEndRef}
             content={item.content}
             role={item.role}
             imageUrl={item.imageUrl}
             name={item.name}
+            defaultAvatar={defaultAvatar}
+            defaultName={defaultName}
           />
         )}
       </ViewportList>
     ),
-    [messages]
+    [messages, defaultAvatar, defaultName]
   );
 
   return (
@@ -205,6 +249,7 @@ export function Chat() {
           )}
           <div ref={viewRef} className="flex flex-col">
             {chatList}
+            <div ref={messagesEndRef}></div>
           </div>
 
 

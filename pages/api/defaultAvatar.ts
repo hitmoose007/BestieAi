@@ -30,8 +30,8 @@ export default async function sendTextToAvatar(
 
     //send prompt to openai
     res.status(200).json({
-      image_url: avatarRoleTypeData[0].name,
-      name: avatarRoleTypeData[0].image_url,
+      image_url: avatarRoleTypeData[0].image_url,
+      name: avatarRoleTypeData[0].name,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
