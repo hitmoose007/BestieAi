@@ -10,6 +10,7 @@ export const initialMessages: ChatGPTMessage[] = [
   {
     role: "assistant",
     content: "Hi! I am a friendly AI assistant. Ask me anything!",
+  
   },
 ];
 
@@ -70,6 +71,7 @@ export function Chat() {
         }
 
         const data = await response.json();
+        console.log(data);
         data.chatHistoryData.forEach((item: any) => {
           setMessages((prev) => [
             { role: "user", content: item.user_message },
