@@ -281,7 +281,9 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^18.0.33":
+<<<<<<< HEAD
+=======
+"@types/react@latest":
   version "18.0.33"
   resolved "https://registry.npmjs.org/@types/react/-/react-18.0.33.tgz"
   integrity sha512-sHxzVxeanvQyQ1lr8NSHaj0kDzcNiGpILEVt69g9S31/7PfMvNCKLKcsHw4lYKjs3cGNJjXSP4mYzX43QlnjNA==
@@ -290,6 +292,7 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
+>>>>>>> 5255284751119c27368921973e3f0874cef87f17
 "@types/scheduler@*":
   version "0.16.3"
   resolved "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.3.tgz"
