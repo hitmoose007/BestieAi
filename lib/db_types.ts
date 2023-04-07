@@ -135,18 +135,21 @@ export interface Database {
       avatar_roles: {
         Row: {
           description: string | null
+          description_embeddings: unknown | null
           id: number
           name: string | null
           role_type: number | null
         }
         Insert: {
           description?: string | null
+          description_embeddings?: unknown | null
           id: number
           name?: string | null
           role_type?: number | null
         }
         Update: {
           description?: string | null
+          description_embeddings?: unknown | null
           id?: number
           name?: string | null
           role_type?: number | null
@@ -489,6 +492,7 @@ export interface Database {
           subtask_id: number
           subtask_name: string
           subtask_completed: boolean
+          subtask_description: string
         }[]
       }
       hello: {
