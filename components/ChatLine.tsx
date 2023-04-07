@@ -61,12 +61,14 @@ export function ChatLine({
   console.log("Default Avatar: ", defaultAvatar)
   const formatteMessage = convertNewLines(content);
   return (
+    
     <div
       className={
         role != "assistant" ? "ml-auto clear-both" : "mr-auto clear-both"
       }
     >
       <BalancerWrapper>
+        {defaultAvatar&&
         <div className="float-right mb-5 rounded-lg bg-white py-2 shadow-lg ring-1 ring-zinc-100 sm:px-6">
           <div className="flex space-x-3">
             <div className="flex-1 gap-4 space-y-2 ">
@@ -75,6 +77,8 @@ export function ChatLine({
                   role == "assistant" ? "min-w-full" : "w-20"
                 }`}
               >
+                {defaultAvatar?
+                <>
                 <span>
                   <img
                     className={`rounded-full object-cover ${
@@ -82,12 +86,14 @@ export function ChatLine({
                     }`}
                     src={role === "assistant" ? (imageUrl || defaultAvatar) : "images/pic.png"}
                     alt=""
-                  />
+                    />
                 </span>
 
                 <span className="hover:underline text-sm font-thin my-auto">
                   {role == "assistant" ? (name||defaultName) : "You"}
                 </span>
+                    </>
+                :null}
               </p>
               <p
                 className={clsx(
@@ -100,7 +106,7 @@ export function ChatLine({
             </div>
           </div>
         </div>
+        }
       </BalancerWrapper>
     </div>
-  );
-}
+  );}

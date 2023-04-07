@@ -3,7 +3,6 @@ import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
 import { ViewportList } from "react-viewport-list";
 //react virtualized
-import { List, AutoSizer } from "react-virtualized";
 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
@@ -22,7 +21,6 @@ export function Chat() {
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const [defaultAvatar, setDefaultAvatar] = useState("");
   const [defaultName, setDefaultName] = useState("");
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
@@ -95,6 +93,7 @@ export function Chat() {
         );
 
         setFetching(false);
+        
       } catch (error) {
         console.error(error);
         setFetching(false);
