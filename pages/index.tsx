@@ -118,8 +118,8 @@ function Home() {
   };
 
   return (
-    <div className="w-full h-screen flex bg-zinc-200">
-      <div className="w-1/2 px-2 pt-12   ">
+    <div className="w-full h-screen flex flex-col lg:flex-row bg-zinc-200">
+      <div className="lg:w-1/2 px-2 pt-12   ">
         <span className="bg-white w-full flex rounded-t-2xl p-2 py-4 ">
           <h1 className="inline-block align-middle ml-4 font-semibold   ">
             Avatar
@@ -128,7 +128,7 @@ function Home() {
         <Chat />
       </div>
 
-      <div className="w-1/2 px-2 pt-12  ">
+      <div className="lg:w-1/2 px-2 pt-12  ">
         <div className="bg-white border-b border-zinc-200 w-full flex rounded-t-2xl  p-2 py-2  ">
           <button
             onClick={() => generateTasks()}
