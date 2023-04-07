@@ -117,6 +117,7 @@ export function Chat() {
 
     // This data is a ReadableStream
     const data = response.body;
+    console.log("This is the data: ", data)
     if (!data) {
       return;
     }
@@ -134,10 +135,13 @@ export function Chat() {
 
       lastMessage = lastMessage + chunkValue;
       const parsed = JSON.parse(lastMessage);
-
+      console.log("This is the parsed: ", parsed)
       setMessages([
         ...newMessages,
-        { role: "assistant", content: parsed.content } as ChatGPTMessage,
+        { role: "assistant", content: parsed.content, 
+        imageUrl: parsed.image_url,
+        name: parsed.name,
+      } as ChatGPTMessage,
       ]);
 
       setLoading(false);
@@ -168,6 +172,8 @@ export function Chat() {
             forwardRef={messagesEndRef}
             content={item.content}
             role={item.role}
+            imageUrl={item.imageUrl}
+            name={item.name}
           />
         )}
       </ViewportList>
