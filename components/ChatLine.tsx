@@ -78,14 +78,14 @@ export function ChatLine({
                 <span>
                   <img
                     className={`rounded-full object-cover ${
-                      role == "assistant" ? "h-10 w-10" : "h-5 w-5"
+                      role == "assistant" ? "h-10 w-10" : "h-10 w-10"
                     }`}
                     src={role === "assistant" ? (imageUrl || defaultAvatar) : "images/pic.png"}
                     alt=""
                   />
                 </span>
 
-                <span className="hover:underline text-sm font-thin">
+                <span className="hover:underline text-sm font-thin my-auto">
                   {role == "assistant" ? (name||defaultName) : "You"}
                 </span>
               </p>
