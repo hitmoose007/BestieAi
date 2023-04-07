@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef,useMemo ,useCallback } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
-import { ViewportList } from "react-viewport-list";
 //react virtualized
+import { List, CellMeasurer, CellMeasurerCache } from "react-virtualized";
 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
@@ -17,39 +17,28 @@ export function Chat() {
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
   const [fetching, setFetching] = useState(false);
+  const [scrollTop, setScrollTop] = useState(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const viewRef = useRef<HTMLDivElement>(null);
+  const cache = useRef(
+    new CellMeasurerCache({
+      fixedWidth: true,
+      defaultHeight: 100,
+    })
+  );
 
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
 
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && lastMessage && messagesEndRef.current) {
-        if (
-          offset >= 0 ||
-          messagesEndRef.current.getBoundingClientRect().bottom <=
-            window.innerHeight
-        ) {
-          messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-          console.log("scrolling to", messagesEndRef.current);
-        }
-      }
-    };
-
-    window.addEventListener("keypress", handleKeyPress);
-
-    return () => {
-      window.removeEventListener("keypress", handleKeyPress);
-    };
-  }, [messages, offset]);
-
-  const handleScroll = (e: React.UIEvent<HTMLElement>) => {
-    if (e.currentTarget.scrollTop === 0) {
-      setOffset(offset + 10);
+  const handleScroll = useCallback(({ scrollTop }) => {
+    setScrollTop(scrollTop);
+    if (scrollTop === 0) {
+      setOffset((prev) => prev + 10);
+      console.log("offset", offset);
     }
-  };
+  }, []);
+
+ 
+
   useEffect(() => {
     const fetchMessageHistory = async () => {
       try {
@@ -76,6 +65,8 @@ export function Chat() {
             ...prev,
           ]);
         });
+        cache.current.clearAll(); // clear height cache for all cells
+        //set scroll to top
 
         setFetching(false);
       } catch (error) {
@@ -101,7 +92,6 @@ export function Chat() {
       },
       body: JSON.stringify({
         userMessage: message,
-
       }),
     });
 
@@ -140,49 +130,39 @@ export function Chat() {
       setLoading(false);
     }
   };
-  // function rowRenderer({ index, key, style }) {
-  //   const item = messages[index];
-  //   return (
-  //     <div key={key} style={style}>
-  //       <ChatLine
-  //         key={index}
-  //         forwardRef={messagesEndRef}
-  //         content={item.content}
-  //         role={item.role}
-  //       />
-  //     </div>
-  //   );
-  // }
-  const chatList = useMemo(
-    () => (
-      <ViewportList viewportRef={viewRef} items={messages}  scrollThreshold={0.9} //size
-        overscan={10} //size
-        itemSize={100} //size
-        >
-        {(item, index) => (
+  function rowRenderer({ index, key, style, parent }) {
+    const item = messages[index];
+    return (
+      <CellMeasurer
+        key={key}
+        cache={cache.current}
+        parent={parent}
+        columnIndex={0}
+        rowIndex={index}
+      >
+        <div key={key} style={style}>
           <ChatLine
             key={index}
-            forwardRef={messagesEndRef}
+            forwardRef={index === messages.length - 1 ? messagesEndRef : null}
             content={item.content}
             role={item.role}
           />
-        )}
-      </ViewportList>
-    ),
-    [messages]
-  );
+        </div>
+      </CellMeasurer>
+    );
+  }
 
   return (
     <div className="rounded-b-2xl bg-white border p-6 flex flex-col h-[calc(100vh-7rem)]">
       <div
         id="container"
         ref={containerRef}
-        className="overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]"
-        onScroll={handleScroll}
+        className=" scrollbar-thin scrollbar-thumb-zinc-300 max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]"
+        //if try to scroll up even if no scroll
       >
-        <div className="flex-grow">
+        <div className="flex-grow relative">
           {fetching && (
-            <div className="flex flex-auto flex-col justify-center items-center p-4 md:p-5">
+            <div className="flex flex-auto flex-col justify-center items-center p-4 md:p-5 absolute z-50">
               <div className="flex justify-center">
                 <div
                   className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"
@@ -194,12 +174,17 @@ export function Chat() {
               </div>
             </div>
           )}
-          <div ref={viewRef} className="flex flex-col">
-            {chatList}
-          </div>
 
-
-          {loading && <LoadingChatLine />}
+          <List
+            width={containerRef.current?.clientWidth || 300}
+            height={containerRef.current?.clientHeight || 300}
+            rowHeight={cache.current.rowHeight}
+            rowCount={messages.length}
+            rowRenderer={rowRenderer}
+            scrollTop={scrollTop}
+            onScroll={handleScroll}
+            deferredMeasurementCache={cache.current}
+          />
 
           {messages.length < 2 && (
             <span className="mx-auto flex flex-grow text-gray-600 clear-both">
@@ -210,9 +195,7 @@ export function Chat() {
         </div>
       </div>
       <div className="flex-shrink-0">
-        <InputMessage
-          sendMessage={sendMessage}
-        />
+        <InputMessage sendMessage={sendMessage} loading={loading} />
       </div>
     </div>
   );

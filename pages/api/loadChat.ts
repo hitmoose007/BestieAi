@@ -26,8 +26,8 @@ export default async function sendTextToAvatar(
   
         .range(req.body["offset"], req.body["offset"] + 10);
 
-    //insert embedding of user message and agent message into database
 
+    //insert embedding of user message and agent message into database
     res.status(200).json({ chatHistoryData });
   } catch (error: unknown) {
     if (error instanceof Error) {

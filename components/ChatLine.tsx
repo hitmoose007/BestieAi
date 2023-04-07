@@ -9,6 +9,7 @@ type ChatGPTAgent = "user" | "system" | "assistant";
 export interface ChatGPTMessage {
   role: ChatGPTAgent;
   content: string;
+  key ?: string;
 }
 
 
@@ -55,7 +56,7 @@ export function ChatLine({
   return (
     <div
       className={
-        role != "assistant" ? "ml-auto clear-both" : "mr-auto clear-both"
+        role != "assistant" ? "float-right clear-both" : "float-left clear-both"
       }
       ref={forwardRef}
     >
