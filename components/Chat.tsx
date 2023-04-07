@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
 //react virtualized
-import { List, CellMeasurer, CellMeasurerCache } from "react-virtualized";
+import {CellMeasurerCache, List, CellMeasurer } from "react-virtualized";
 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
@@ -28,14 +28,15 @@ export function Chat() {
     })
   );
 
-
-  const handleScroll = useCallback(({ scrollTop }) => {
+  const handleScroll = useCallback(({ scrollTop}:any) => {
     setScrollTop(scrollTop);
+    console.log("scrolltop", scrollTop)
     if (scrollTop === 0) {
       setOffset((prev) => prev + 10);
       console.log("offset", offset);
     }
   }, []);
+
 
  
 
@@ -130,7 +131,7 @@ export function Chat() {
       setLoading(false);
     }
   };
-  function rowRenderer({ index, key, style, parent }) {
+  function rowRenderer({ index, key, style, parent }: any) {
     const item = messages[index];
     return (
       <CellMeasurer
