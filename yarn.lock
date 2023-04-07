@@ -281,8 +281,6 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-<<<<<<< HEAD
-=======
 "@types/react@latest":
   version "18.0.33"
   resolved "https://registry.npmjs.org/@types/react/-/react-18.0.33.tgz"
@@ -292,7 +290,6 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
->>>>>>> 5255284751119c27368921973e3f0874cef87f17
 "@types/scheduler@*":
   version "0.16.3"
   resolved "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.3.tgz"
