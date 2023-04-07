@@ -9,7 +9,6 @@ const config = new Configuration({
 
 const openai = new OpenAIApi(config);
 
-
 export default async function sendTextToAvatar(
   req: NextApiRequest,
   res: NextApiResponse
@@ -61,11 +60,6 @@ export default async function sendTextToAvatar(
       };
     });
 
-    // console.log(roleDataJson.id)
-    // console.log(roleData[0].description_embeddings)
-    // console.log(embeddings)
-    // console.log(roleDataJson)
-
     const roleMatchData = roleDataJson?.map((role: any) => {
       return {
         role_id: role.role_id,
@@ -89,7 +83,7 @@ export default async function sendTextToAvatar(
     // console.log(highestSimilarityRole);
 
     //use highest similarity role_type to get avatar_role_type and avatar_mock_data
-    const { data: avatarRoleTypeData, error: avatarRoleTypeError } =
+    const { data: avatarRoleTypeData , error: avatarRoleTypeError } : any =
       await supabaseClient
         .from("avatar_role_type")
         .select(
@@ -122,76 +116,86 @@ export default async function sendTextToAvatar(
     //     throw new Error("No role description");
     //     }
     if (avatarRoleTypeData[0]) {
-        if (!avatarRoleTypeData[0].avatar_mock_data) {
-            throw new Error("No role description");
-        }
+      if (!avatarRoleTypeData[0].avatar_mock_data) {
+        throw new Error("No role description");
+      }
 
+      if (!avatarRoleTypeData[0]?.avatar_mock_data) {
+        // fixed
+        throw new Error("No role description");
+      }
 
+      // console.log(highestSimilarityRole?.description);
+      const prompt =
+        "Currently your name is " +
+        avatarRoleTypeData[0].avatar_mock_data[0].name +
+        ". You are a conversational agent whose purpose is to be the user's personal assistant and confidant like a best friend.   Your role and purpose will change. Your role current role is:" +
+        highestSimilarityRole?.name +
+        ". Your role description is:" +
+        highestSimilarityRole?.description +
+        ". You will speak with the following dialect:" +
+        avatarRoleTypeData[0].avatar_mock_data[0].dialect +
+        ". Your vocabulary consists of:" +
+        avatarRoleTypeData[0].avatar_mock_data[0].vocabulary +
+        ". We are are providing you with the most relevant parts of the chat history that may not necessarily be in order. This is the Context of the chat." +
+        chatHistory.join("") +
+        ". This is the current message from the user:" +
+        userCurrentText +
+        "Now you must provide a response to the user that is appropriate for the context and the user. Make sure you start your message by introudcing yourself and your role";
 
-    // console.log(highestSimilarityRole?.description);
-    const prompt =
-      "Currently your name is " +
-      avatarRoleTypeData[0].avatar_mock_data[0].name  +
-      ". You are a conversational agent whose purpose is to be the user's personal assistant and confidant like a best friend.   Your role and purpose will change. Your role current role is:" +
-      highestSimilarityRole?.name +
-      ". Your role description is:" +
-      highestSimilarityRole?.description +
-      ". You will speak with the following dialect:" +
-      avatarRoleTypeData[0].avatar_mock_data[0].dialect +
-      ". Your vocabulary consists of:" +
-      avatarRoleTypeData[0].avatar_mock_data[0].vocabulary +
-      ". We are are providing you with the most relevant parts of the chat history that may not necessarily be in order. This is the Context of the chat." +
-      chatHistory.join("") +
-      ". This is the current message from the user:" +
-      userCurrentText +
-      "Now you must provide a response to the user that is appropriate for the context and the user. Make sure you start your message by introudcing yourself and your role";
+      //send prompt to openai
 
-    //send prompt to openai
+      const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: prompt,
+        temperature: 0.9,
+        max_tokens: 3000,
+        top_p: 1.0,
+        frequency_penalty: 0.0,
+        presence_penalty: 1,
+      });
 
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: prompt,
-      temperature: 0.9,
-      max_tokens: 3000,
-      top_p: 1.0,
-      frequency_penalty: 0.0,
-      presence_penalty: 1,
-    });
+      //insert embedding of user message and agent message into database
 
-    //insert embedding of user message and agent message into database
+      if (!completion.data.choices[0].text) {
+        throw new Error("No response from avatar");
+      }
+      const agentText = completion.data.choices[0].text.replace(/\n/g, " ");
+      const agentEmbedding = await openai.createEmbedding({
+        model: "text-embedding-ada-002",
+        input: agentText,
+      });
+      const { data: insertedChatHistory } = await supabaseClient
+        .from("Chat_History")
+        .insert([
+          {
+            userId: hardCodedUserId,
+            avatarId: hardCodedAvatarId,
+            user_message: userCurrentText,
+            agent_message: completion.data.choices[0].text,
+          },
+        ])
+        .select("id");
 
-    if (!completion.data.choices[0].text) {
-      throw new Error("No response from avatar");
+      if (!insertedChatHistory) {
+        throw new Error("Error inserting chat history");
+      }
+
+      await supabaseClient.from("Chat_Embeddings").insert({
+        chat_id: insertedChatHistory[0].id,
+        user_message_embedding: userEmbeddingCurrent.data.data[0].embedding,
+        avatar_message_embedding: agentEmbedding.data.data[0].embedding,
+      });
+
+      res
+        .status(200)
+        .json({
+          content: completion.data.choices[0].text,
+          image_url: avatarRoleTypeData[0].avatar_mock_data[0].image_url,
+          name: avatarRoleTypeData[0].avatar_mock_data[0].name,
+        });
     }
-    const agentText = completion.data.choices[0].text.replace(/\n/g, " ");
-    const agentEmbedding = await openai.createEmbedding({
-      model: "text-embedding-ada-002",
-      input: agentText,
-    });
-    const { data: insertedChatHistory } = await supabaseClient
-      .from("Chat_History")
-      .insert([
-        {
-          userId: hardCodedUserId,
-          avatarId: hardCodedAvatarId,
-          user_message: userCurrentText,
-          agent_message: completion.data.choices[0].text,
-        },
-      ])
-      .select("id");
-
-    if (!insertedChatHistory) {
-      throw new Error("Error inserting chat history");
-    }
-
-    await supabaseClient.from("Chat_Embeddings").insert({
-      chat_id: insertedChatHistory[0].id,
-      user_message_embedding: userEmbeddingCurrent.data.data[0].embedding,
-      avatar_message_embedding: agentEmbedding.data.data[0].embedding,
-    });
-
-    res.status(200).json({ content: completion.data.choices[0].text, image_url: avatarRoleTypeData[0].avatar_mock_data[0].image_url ,name: avatarRoleTypeData[0].avatar_mock_data[0].name  });
-  }} catch (error: unknown) {
+  } catch (error: unknown) {
     if (error instanceof Error) {
       // handle error of type Error
       res.status(500).json({ error: error.message });

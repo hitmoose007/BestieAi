@@ -112,13 +112,14 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: avatarRoleTypeData, error: avatarRoleTypeError } =
       await supabaseClient
         .from("avatar_role_type")
-        .select(`id, role_description, avatar_mock_data (id, dialect)`)
+        .select(`id, role_description, avatar_mock_data (id,name,dialect,vocabulary,image_url, dialect)`)
         .eq("id", highestSimilarityRole.role_type);
     if (avatarRoleTypeError) {
       throw new Error(avatarRoleTypeError.message);
     }
 
-    console.log(avatarRoleTypeData[0].avatar_mock_data[0].dialect);
+    // console.log(avatarRoleTypeData[0].avatar_mock_data[0])
+    // console.log(avatarRoleTypeData[0].avatar_mock_data[0].dialect);
 
     console.log(avatarRoleTypeData[0].role_description);
     // const { data: avatarMockData, error: avatarMockDataError } =
