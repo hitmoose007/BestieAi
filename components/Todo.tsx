@@ -53,7 +53,6 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
 
       fetch(`/api/updateSubTaskStatus`, requestOptions)
         .then((response) => response.json())
-        .then((data) => console.log(data))
         .catch((error) => console.error(error));
     });
 
@@ -67,7 +66,6 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
     };
     fetch(`/api/updataTaskStatus`, requestOptions)
       .then((response) => response.json())
-      .then((data) => console.log(data))
       .catch((error) => console.error(error));
   };
 
@@ -89,7 +87,6 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
 
     fetch(`/api/updateSubTaskStatus`, requestOptions)
       .then((response) => response.json())
-      .then((data) => console.log(data))
       .catch((error) => console.error(error));
   };
 

@@ -2,7 +2,6 @@ import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
 import { ViewportList } from "react-viewport-list";
-//react virtualized
 
 export const initialMessages: ChatGPTMessage[] = [
   {
@@ -77,9 +76,9 @@ export function Chat() {
         }
 
         const data = await response.json();
+
         data.chatHistoryData.forEach(
           (item: any) => {
-            console.log("item", item);
             if (item.imageUrl !== null) {
 
               setMessages((prev) => [
