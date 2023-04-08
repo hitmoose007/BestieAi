@@ -1,15 +1,13 @@
-import { useEffect, useState, useRef,useMemo ,useCallback } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
 import { ViewportList } from "react-viewport-list";
 //react virtualized
 
-// default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
   {
     role: "assistant",
     content: "Hi! I am a friendly AI assistant. Ask me anything!",
-  
   },
 ];
 
@@ -32,7 +30,7 @@ export function Chat() {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
       console.log("scrolling to", messagesEndRef.current);
       setHasScrolledToBottom(true);
-      if(offset<=1){
+      if (offset <= 1) {
         setHasScrolledToBottom(false);
       }
     }
@@ -81,15 +79,33 @@ export function Chat() {
         }
 
         const data = await response.json();
-        console.log(data);
-        data.chatHistoryData.forEach((item: any) => {
-          setMessages((prev) => [
-            { role: "user", content: item.user_message },
-            { role: "assistant", content: item.agent_message },
-            ...prev,
-          ]);
-        }
-        //get default image and name has no
+        // console.log(data);
+        // console.log('helloooo')
+        data.chatHistoryData.forEach(
+          (item: any) => {
+            console.log("item", item);
+            // console.log('helllllllll')
+            if (item.imageUrl !== null) {
+                // console.log("item.imageUrl", item.imageUrl);
+
+              setMessages((prev) => [
+                { role: "user", content: item.user_message },
+                {
+                  role: "assistant",
+                  content: item.agent_message,
+                  imageUrl: item.imageUrl,
+                  name: item.avatarName,
+                },
+                ...prev,
+              ]);
+            } else
+              setMessages((prev) => [
+                { role: "user", content: item.user_message },
+                { role: "assistant", content: item.agent_message },
+                ...prev,
+              ]);
+          }
+          //get default image and name has no
         );
 
         setFetching(false);
@@ -107,28 +123,25 @@ export function Chat() {
           headers: {
             "Content-Type": "application/json",
           },
-        }
-        );
+        });
 
         if (!response.ok) {
           throw new Error(response.statusText);
         }
         //parse response to json
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setDefaultAvatar(data.image_url);
         setDefaultName(data.name);
-      }
-      catch (error) {
+      } catch (error) {
         console.error(error);
         setFetching(false);
       }
     };
     fetchMessageHistory();
-    if(offset===0){
+    if (offset === 0) {
       fetchDefaultMessage();
     }
-
   }, [offset]);
 
   const sendMessage = async (message: string) => {
@@ -146,12 +159,11 @@ export function Chat() {
       },
       body: JSON.stringify({
         userMessage: message,
-
       }),
     });
 
-    console.log("Edge function returned.");
-    console.log("This is the response: ", response.body);
+    // console.log("Edge function returned.");
+    // console.log("This is the response: ", response.body);
 
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -159,7 +171,7 @@ export function Chat() {
 
     // This data is a ReadableStream
     const data = response.body;
-    console.log("This is the data: ", data)
+    // console.log("This is the data: ", data);
     if (!data) {
       return;
     }
@@ -177,37 +189,30 @@ export function Chat() {
 
       lastMessage = lastMessage + chunkValue;
       const parsed = JSON.parse(lastMessage);
-      console.log("This is the parsed: ", parsed)
+    //   console.log("This is the parsed: ", parsed);
       setMessages([
         ...newMessages,
-        { role: "assistant", content: parsed.content, 
-        imageUrl: parsed.image_url,
-        name: parsed.name,
-      } as ChatGPTMessage,
+        {
+          role: "assistant",
+          content: parsed.content,
+          imageUrl: parsed.image_url,
+          name: parsed.name,
+        } as ChatGPTMessage,
       ]);
 
       setLoading(false);
     }
   };
-  // function rowRenderer({ index, key, style }) {
-  //   const item = messages[index];
-  //   return (
-  //     <div key={key} style={style}>
-  //       <ChatLine
-  //         key={index}
-  //         forwardRef={messagesEndRef}
-  //         content={item.content}
-  //         role={item.role}
-  //       />
-  //     </div>
-  //   );
-  // }
+
   const chatList = useMemo(
     () => (
-      <ViewportList viewportRef={viewRef} items={messages}  scrollThreshold={0.9} //size
+      <ViewportList
+        viewportRef={viewRef}
+        items={messages}
+        scrollThreshold={0.9} //size
         overscan={10} //size
         itemSize={100} //size
-        >
+      >
         {(item, index) => (
           <ChatLine
             key={index}
@@ -225,42 +230,39 @@ export function Chat() {
   );
 
   return (
-    <div className="rounded-b-2xl bg-white border p-6 flex flex-col h-[calc(100vh-7rem)]">
+    <div className='rounded-b-2xl bg-white border p-6 flex flex-col h-[calc(100vh-7rem)]'>
       <div
-        id="container"
+        id='container'
         ref={containerRef}
-        className="overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]"
+        className='overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 max-h-[calc(100vh-11rem)] min-h-[calc(100vh-11rem)]'
         onScroll={handleScroll}
       >
-        <div className="flex-grow">
+        <div className='flex-grow'>
           {fetching && (
-            <div className="flex flex-auto flex-col justify-center items-center p-4 md:p-5">
-              <div className="flex justify-center">
+            <div className='flex flex-auto flex-col justify-center items-center p-4 md:p-5'>
+              <div className='flex justify-center'>
                 <div
-                  className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"
-                  role="status"
-                  aria-label="loading"
+                  className='animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full'
+                  role='status'
+                  aria-label='loading'
                 >
-                  <span className="sr-only">Loading...</span>
+                  <span className='sr-only'>Loading...</span>
                 </div>
               </div>
             </div>
           )}
-          <div ref={viewRef} className="flex flex-col">
+          <div ref={viewRef} className='flex flex-col'>
             {chatList}
             <div ref={messagesEndRef}></div>
           </div>
-
 
           {loading && <LoadingChatLine />}
 
           <div />
         </div>
       </div>
-      <div className="flex-shrink-0">
-        <InputMessage
-          sendMessage={sendMessage}
-        />
+      <div className='flex-shrink-0'>
+        <InputMessage sendMessage={sendMessage} />
       </div>
     </div>
   );

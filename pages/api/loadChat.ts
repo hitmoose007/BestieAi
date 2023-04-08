@@ -19,7 +19,7 @@ export default async function sendTextToAvatar(
     const { data: chatHistoryData, error: chatHistoryError } =
       await supabaseClient
         .from("Chat_History")
-        .select("user_message, agent_message")
+        .select("user_message, agent_message, avatarName, imageUrl")
         .eq("userId", hardCodedUserId)
         .eq("avatarId", hardCodedAvatarId)
         .order("created_at", { ascending: false })

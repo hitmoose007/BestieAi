@@ -16,14 +16,14 @@ export default async function sendTextToAvatar(
   try {
     const hardCodedUserId = "clf24ucm50000l208pkomy8ze";
     const hardCodedAvatarId = 1;
-    const { data: avatarData, error: avatarError } = await supabaseClient
-      .from("avatar_mock_data")
-      .select("dialect, backstory, vocabulary, name")
-      .eq("id", hardCodedAvatarId);
+    // const { data: avatarData, error: avatarError } = await supabaseClient
+    //   .from("avatar_mock_data")
+    //   .select("dialect, backstory, vocabulary, name")
+    //   .eq("id", hardCodedAvatarId);
 
-    if (avatarError) {
-      throw new Error(avatarError.message);
-    }
+    // if (avatarError) {
+    //   throw new Error(avatarError.message);
+    // }
     // const dialect = 'Angry Irish';
     // const role = 'Doctor';
     const userCurrentText = req.body["userMessage"].replace(/\n/g, " ");
@@ -39,7 +39,7 @@ export default async function sendTextToAvatar(
       {
         query_embedding: userEmbeddingCurrent.data.data[0].embedding,
         match_threshold: 0.7, // Choose an appropriate threshold for your data
-        match_count: 10, // Ch
+        match_count: 8, // Ch
         session_user_id: hardCodedUserId,
         session_avatar_id: hardCodedAvatarId,
       }
@@ -83,7 +83,7 @@ export default async function sendTextToAvatar(
     // console.log(highestSimilarityRole);
 
     //use highest similarity role_type to get avatar_role_type and avatar_mock_data
-    const { data: avatarRoleTypeData , error: avatarRoleTypeError } : any =
+    const { data: avatarRoleTypeData, error: avatarRoleTypeError }: any =
       await supabaseClient
         .from("avatar_role_type")
         .select(
@@ -97,7 +97,7 @@ export default async function sendTextToAvatar(
     // console.log(avatarRoleTypeData[0].avatar_mock_data[0].image_url);
 
     // console.log(avatarRoleTypeData[0].role_description);
-    const chatHistory: string[] = [];
+    const similarChatHistory: string[] = [];
     if (sortedChatData) {
       for (const chat of sortedChatData) {
         const userMessage = chat.user_message?.replace(/\n/g, " ");
@@ -106,11 +106,34 @@ export default async function sendTextToAvatar(
 
         const query = `user:${userMessage}. Avatar: ${avatarMessage}`;
 
-        chatHistory.push(query);
+        similarChatHistory.push(query);
       }
     } else {
-      chatHistory.push("No previous chat history available for now");
+      similarChatHistory.push("No previous chat history available for now");
     }
+
+    //get chat history of last 5 recent messages
+    const { data: chatHistoryData, error: chatHistoryError } =
+      await supabaseClient
+        .from("Chat_History")
+        .select("user_message, agent_message")
+        .eq("userId", hardCodedUserId)
+        .eq("avatarId", hardCodedAvatarId)
+        .order("id", { ascending: false })
+        .limit(3);
+
+    if (chatHistoryError) {
+      throw new Error(chatHistoryError.message);
+    }
+    //group the array into one string
+    const chatHistoryString = chatHistoryData
+      ?.map((chat: any) => {
+        return `User: ${chat.user_message}. Avatar: ${chat.agent_message}. `;
+      })
+      .join(" ");
+
+    //remove\n from the string
+    const chatHistoryStringNoNewLine = chatHistoryString.replace(/\n/g, " ");
 
     // if (!avatarRoleTypeData[0]) {
     //     throw new Error("No role description");
@@ -137,11 +160,14 @@ export default async function sendTextToAvatar(
         avatarRoleTypeData[0].avatar_mock_data[0].dialect +
         ". Your vocabulary consists of:" +
         avatarRoleTypeData[0].avatar_mock_data[0].vocabulary +
-        ". We are are providing you with the most relevant parts of the chat history that may not necessarily be in order. This is the Context of the chat." +
-        chatHistory.join("") +
-        ". This is the current message from the user:" +
+        ". We are now providing you with the most relevant parts of the chat history that may not necessarily be in order. These are the most relevant parts we picked out from the whole chat " +
+        similarChatHistory.join("") +
+      "These are the previous 3 messages between you and the user that had occured before. " +
+        chatHistoryStringNoNewLine +
+        
+        ". Now we are providing you with the current message from the user. This is the current message from the user:" +
         userCurrentText +
-        "Now you must provide a response to the user that is appropriate for the context and the user. Make sure you start your message by introudcing yourself and your role";
+        "Now you must provide a response to the user that is appropriate for the context and the user.";
 
       //send prompt to openai
 
@@ -165,6 +191,9 @@ export default async function sendTextToAvatar(
         model: "text-embedding-ada-002",
         input: agentText,
       });
+
+      //   console.log(avatarRoleTypeData[0].avatar_mock_data[0].name);
+      //   console.log(avatarRoleTypeData[0].avatar_mock_data[0].image_url);
       const { data: insertedChatHistory } = await supabaseClient
         .from("Chat_History")
         .insert([
@@ -173,10 +202,13 @@ export default async function sendTextToAvatar(
             avatarId: hardCodedAvatarId,
             user_message: userCurrentText,
             agent_message: completion.data.choices[0].text,
+            avatarName: avatarRoleTypeData[0].avatar_mock_data[0].name,
+            imageUrl: avatarRoleTypeData[0].avatar_mock_data[0].image_url,
           },
         ])
         .select("id");
 
+      // console.log(insertedChatHistory);
       if (!insertedChatHistory) {
         throw new Error("Error inserting chat history");
       }
@@ -187,13 +219,11 @@ export default async function sendTextToAvatar(
         avatar_message_embedding: agentEmbedding.data.data[0].embedding,
       });
 
-      res
-        .status(200)
-        .json({
-          content: completion.data.choices[0].text,
-          image_url: avatarRoleTypeData[0].avatar_mock_data[0].image_url,
-          name: avatarRoleTypeData[0].avatar_mock_data[0].name,
-        });
+      res.status(200).json({
+        content: completion.data.choices[0].text,
+        image_url: avatarRoleTypeData[0].avatar_mock_data[0].image_url,
+        name: avatarRoleTypeData[0].avatar_mock_data[0].name,
+      });
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
