@@ -18,7 +18,6 @@ export function Chat() {
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const [defaultAvatar, setDefaultAvatar] = useState("");
   const [defaultName, setDefaultName] = useState("");
-  const [sendError, setSendError] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
@@ -138,6 +137,7 @@ export function Chat() {
 
   const sendMessage = async (message: string) => {
     setLoading(true);
+
     const newMessages = [
       ...messages,
       { role: "user", content: message } as ChatGPTMessage,
@@ -250,7 +250,7 @@ export function Chat() {
         </div>
       </div>
       <div className='flex-shrink-0'>
-        <InputMessage sendMessage={sendMessage} />
+        <InputMessage sendMessage={sendMessage} loading={loading} />
       </div>
     </div>
   );
