@@ -3,7 +3,6 @@ import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
 import { ViewportList } from "react-viewport-list";
 //react virtualized
-import { List, AutoSizer } from "react-virtualized";
 
 export const initialMessages: ChatGPTMessage[] = [
   {
@@ -20,7 +19,6 @@ export function Chat() {
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const [defaultAvatar, setDefaultAvatar] = useState("");
   const [defaultName, setDefaultName] = useState("");
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
@@ -104,6 +102,7 @@ export function Chat() {
         );
 
         setFetching(false);
+        
       } catch (error) {
         console.error(error);
         setFetching(false);
@@ -247,11 +246,6 @@ export function Chat() {
 
           {loading && <LoadingChatLine />}
 
-          {messages.length < 2 && (
-            <span className='mx-auto flex flex-grow text-gray-600 clear-both'>
-              Type a message to start the conversation
-            </span>
-          )}
           <div />
         </div>
       </div>
