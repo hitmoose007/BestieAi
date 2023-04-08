@@ -18,6 +18,7 @@ export function Chat() {
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const [defaultAvatar, setDefaultAvatar] = useState("");
   const [defaultName, setDefaultName] = useState("");
+  const [sendError, setSendError] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
@@ -155,7 +156,7 @@ export function Chat() {
 
 
     if (!response.ok) {
-      throw new Error(response.statusText);
+      console.error(response.statusText);
     }
 
     // This data is a ReadableStream
