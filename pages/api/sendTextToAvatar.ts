@@ -167,7 +167,7 @@ export default async function sendTextToAvatar(
         
         ". Now we are providing you with the current message from the user. This is the current message from the user:" +
         userCurrentText +
-        "Now you must provide a response to the user that is appropriate for the context and the user.";
+        "Now you must provide a response to the user that is appropriate for the context and the user. Do not reply in the format Avatar: your response.";
 
       //send prompt to openai
 

@@ -99,10 +99,10 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
         index === 0 ? "border-b-2" : ""
       } border-green-600 `}
     >
-      <div className="font-bold text-gray-800 text-lg flex items-center justify-between">
-        <div className="flex space-x-2">
+      <div className='font-bold text-gray-800 text-lg flex items-center justify-between'>
+        <div className='flex space-x-2'>
           <input
-            type="checkbox"
+            type='checkbox'
             checked={isDone}
             onChange={handleMainTaskChange}
           />
@@ -112,63 +112,63 @@ const TodoList: React.FC<Props> = ({ data, handleTaskDelete, index }) => {
           >
             {data.task_name}
           </span>
-          <div className="flex text-xl">
+          <div className='flex text-xl'>
             {showSubtasks ? (
               <IoIosArrowDropup
-                className="text-gray-500 cursor-pointer m-1  hover:text-black"
+                className='text-gray-500 cursor-pointer m-1  hover:text-black'
                 onClick={() => setShowSubtasks(false)}
               />
             ) : (
               <IoIosArrowDropdown
-                className="text-gray-500 cursor-pointer m-1   hover:text-black"
+                className='text-gray-500 cursor-pointer m-1   hover:text-black'
                 onClick={() => setShowSubtasks(true)}
               />
             )}
             {index === 0 && (
-              <span className="text-green-500 border-red-500 ml-2 mb-2 text-xs">
+              <span className='text-green-500 border-red-500 ml-2 mb-2 text-xs'>
                 New!
               </span>
             )}
           </div>
         </div>
-        <div className="flex">
+        <div className='flex'>
           <FiXCircle
-            className="text-red-500 cursor-pointer m-1 hover:text-black"
+            className='text-red-500 cursor-pointer m-1 hover:text-black'
             onClick={() => handleTaskDelete(data.task_id)}
           />
         </div>
       </div>
       {showSubtasks && (
-        <ul className="list-disc list-inside mt-4 pl-8">
+        <ul className='list-disc list-inside mt-4 pl-8'>
           {subtasks.map((subtask, index) => (
-            <li key={index} className="flex items-center">
-              
-              <div className="flex flex-col">
+            <li key={index} className='flex items-center'>
+              <div className='flex flex-col'>
                 <div>
-               <input
-                type="checkbox"
-                className="mr-3  "
-                checked={subtask.subtask_completed}
-                onChange={() => handleSubtaskChange(index)}
-              /> <span
-                  className={
-                    subtask.subtask_completed
-                      ? "line-through text-gray-500"
-                      : "text-gray-800"
-                  }
-                >
-                  {subtask.subtask_name}
-                </span></div>
+                  <input
+                    type='checkbox'
+                    className='mr-3  '
+                    checked={subtask.subtask_completed}
+                    onChange={() => handleSubtaskChange(index)}
+                  />{" "}
+                  <span
+                    className={
+                      subtask.subtask_completed
+                        ? "line-through text-gray-500"
+                        : "text-gray-800"
+                    }
+                  >
+                    {subtask.subtask_name}
+                  </span>
+                </div>
 
                 <span
-                  className={
-                    `ml-8  ${
-                    subtask.subtask_completed 
+                  className={`ml-8  ${
+                    subtask.subtask_completed
                       ? " line-through text-gray-500 text-xs"
-                      : " text-gray-500 text-xs"}`
-                  }
+                      : " text-gray-500 text-xs"
+                  }`}
                 >
-                    {/* {subtask.subtask_completed && "Completed - "} */}
+                  {/* {subtask.subtask_completed && "Completed - "} */}
                   {subtask.subtask_description}
                 </span>
               </div>
