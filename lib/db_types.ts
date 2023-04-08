@@ -1,3 +1,11 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json }
+  | Json[]
+
 export interface Database {
   public: {
     Tables: {
@@ -182,24 +190,30 @@ export interface Database {
         Row: {
           agent_message: string | null
           avatarId: number | null
+          avatarName: string | null
           created_at: string | null
           id: number
+          imageUrl: string | null
           user_message: string | null
           userId: string | null
         }
         Insert: {
           agent_message?: string | null
           avatarId?: number | null
+          avatarName?: string | null
           created_at?: string | null
           id?: number
+          imageUrl?: string | null
           user_message?: string | null
           userId?: string | null
         }
         Update: {
           agent_message?: string | null
           avatarId?: number | null
+          avatarName?: string | null
           created_at?: string | null
           id?: number
+          imageUrl?: string | null
           user_message?: string | null
           userId?: string | null
         }

@@ -8,10 +8,13 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [gen, setGen] = useState(false);
   const [error, setError] = useState("");
-
+  const [stopFetchingTasks, setStopFetchingTasks] = useState(false);
   useEffect(() => {
     const fetchTaskHistory = async () => {
       try {
+        if (stopFetchingTasks) {
+          return;
+        }
         setLoading(true);
         const response = await fetch("/api/loadTasks", {
           method: "POST",
@@ -28,7 +31,10 @@ function Home() {
         }
 
         const data = await response.json();
-        console.log(data);
+        console.log(data.results, "this is data");
+        if (data.results.length === 0) {
+          setStopFetchingTasks(true);
+        }
         data.results.forEach((item: any) => {
           setTasks((prev) => [
             ...prev,
@@ -41,6 +47,7 @@ function Home() {
           ]);
         });
 
+        console.log(data);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -48,6 +55,7 @@ function Home() {
       }
     };
     fetchTaskHistory();
+    console.log("offset", offset);
   }, [offset]);
 
   const generateTasks = () => {
@@ -118,51 +126,51 @@ function Home() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col lg:flex-row bg-zinc-200">
-      <div className="lg:w-1/2 px-2 pt-12   ">
-        <span className="bg-white w-full flex rounded-t-2xl p-2 py-4 ">
-          <h1 className="inline-block align-middle ml-4 font-semibold   ">
+    <div className='w-full h-screen flex flex-col lg:flex-row bg-zinc-200'>
+      <div className='lg:w-1/2 px-2 pt-12   '>
+        <span className='bg-white w-full flex rounded-t-2xl p-2 py-4 '>
+          <h1 className='inline-block align-middle ml-4 font-semibold   '>
             Avatar
           </h1>
         </span>
         <Chat />
       </div>
 
-      <div className="lg:w-1/2 px-2 pt-12  ">
-        <div className="bg-white border-b border-zinc-200 w-full flex rounded-t-2xl  p-2 py-2  ">
+      <div className='lg:w-1/2 px-2 pt-12  '>
+        <div className='bg-white border-b border-zinc-200 w-full flex rounded-t-2xl  p-2 py-2  '>
           <button
             onClick={() => generateTasks()}
-            className="bg-green-300 text-green-800 ml-4 font-bold py-2 px-4 rounded-lg flex transition-colors duration-500 ease-in-out hover:bg-green-600 hover:text-white disabled:bg-gray-200 disabled:hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:text-gray-500"
+            className='bg-green-300 text-green-800 ml-4 font-bold py-2 px-4 rounded-lg flex transition-colors duration-500 ease-in-out hover:bg-green-600 hover:text-white disabled:bg-gray-200 disabled:hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:text-gray-500'
             disabled={gen}
           >
             {gen ? (
               <div
-                className="w-4 h-4 mt-1 rounded-full animate-spin
-              border-2 border-solid border-zinc-600 border-t-transparent"
+                className='w-4 h-4 mt-1 rounded-full animate-spin
+              border-2 border-solid border-zinc-600 border-t-transparent'
               ></div>
             ) : (
               <svg
-                preserveAspectRatio="xMidYMin"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-                className="mt-1"
+                preserveAspectRatio='xMidYMin'
+                width='16'
+                height='16'
+                viewBox='0 0 24 24'
+                fill='currentColor'
+                aria-hidden='true'
+                className='mt-1'
               >
                 <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M20.5929 10.9105C21.4425 11.3884 21.4425 12.6116 20.5929 13.0895L6.11279 21.2345C5.27954 21.7033 4.24997 21.1011 4.24997 20.1451L4.24997 3.85492C4.24997 2.89889 5.27954 2.29675 6.11279 2.76545L20.5929 10.9105Z"
+                  fillRule='evenodd'
+                  clipRule='evenodd'
+                  d='M20.5929 10.9105C21.4425 11.3884 21.4425 12.6116 20.5929 13.0895L6.11279 21.2345C5.27954 21.7033 4.24997 21.1011 4.24997 20.1451L4.24997 3.85492C4.24997 2.89889 5.27954 2.29675 6.11279 2.76545L20.5929 10.9105Z'
                 ></path>
               </svg>
             )}
-            <span className="px-2">Generate Tasks</span>
+            <span className='px-2'>Generate Tasks</span>
           </button>
-          {error !== "" && <p className="text-red-500 ml-4 mt-2">{error}</p>}
+          {error !== "" && <p className='text-red-500 ml-4 mt-2'>{error}</p>}
         </div>
         <div
-          className="bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-7rem)] min-h-[calc(100vh-7rem)]"
+          className='bg-white overflow-y-scroll scrollbar-thin scrollbar-thumb-zinc-300 rounded-b-2xl max-h-[calc(100vh-7rem)] min-h-[calc(100vh-7rem)]'
           onScroll={(e) => handleScroll(e)}
         >
           {tasks.map((tasks, index) => (
@@ -173,15 +181,15 @@ function Home() {
               index={index}
             />
           ))}
-          {!loading && (
-            <div className="flex flex-auto flex-col justify-center items-center p-4 md:p-5">
-              <div className="flex justify-center">
+          {!loading && !stopFetchingTasks && (
+            <div className='flex flex-auto flex-col justify-center items-center p-4 md:p-5'>
+              <div className='flex justify-center'>
                 <div
-                  className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"
-                  role="status"
-                  aria-label="loading"
+                  className='animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full'
+                  role='status'
+                  aria-label='loading'
                 >
-                  <span className="sr-only">Loading...</span>
+                  <span className='sr-only'>Loading...</span>
                 </div>
               </div>
             </div>
@@ -191,6 +199,5 @@ function Home() {
     </div>
   );
 }
-
 
 export default Home;
