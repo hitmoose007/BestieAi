@@ -16,16 +16,7 @@ export default async function sendTextToAvatar(
   try {
     const hardCodedUserId = "clf24ucm50000l208pkomy8ze";
     const hardCodedAvatarId = 1;
-    // const { data: avatarData, error: avatarError } = await supabaseClient
-    //   .from("avatar_mock_data")
-    //   .select("dialect, backstory, vocabulary, name")
-    //   .eq("id", hardCodedAvatarId);
-
-    // if (avatarError) {
-    //   throw new Error(avatarError.message);
-    // }
-    // const dialect = 'Angry Irish';
-    // const role = 'Doctor';
+   
     const userCurrentText = req.body["userMessage"].replace(/\n/g, " ");
     //
 
@@ -38,8 +29,8 @@ export default async function sendTextToAvatar(
       "match_chat_messages",
       {
         query_embedding: userEmbeddingCurrent.data.data[0].embedding,
-        match_threshold: 0.7, // Choose an appropriate threshold for your data
-        match_count: 6, // Ch
+        match_threshold: 0.7, 
+        match_count: 5, // Ch
         session_user_id: hardCodedUserId,
         session_avatar_id: hardCodedAvatarId,
       }
