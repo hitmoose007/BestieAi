@@ -38,7 +38,5 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
   }
 
   const json = await res.json();
-//   console.log(json);
-//   console.log(json.choices[0].message.content);
   return json.choices[0].message.content;
 }

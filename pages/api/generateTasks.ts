@@ -78,9 +78,7 @@ const handler = async (req: Request): Promise<Response> => {
       };
     });
 
-    // (roleDataJson.id)
-    // (roleData[0].description_embeddings)
-    // (embeddings)
+
     const roleMatchData = roleDataJson.map((role: any) => {
       return {
         role_id: role.role_id,
@@ -91,14 +89,12 @@ const handler = async (req: Request): Promise<Response> => {
       };
     });
 
-    // (roleMatchData);
+    // console.log(roleMatchData);
 
-    const highestSimilarityRole = roleMatchData.reduce(
-      (acc: any, curr: any) => {
-        return curr.similarity > acc.similarity ? curr : acc;
-      }
-    );
-    // (highestSimilarityRole);
+    const highestSimilarityRole = roleMatchData.reduce((acc:any, curr:any) => {
+      return curr.similarity > acc.similarity ? curr : acc;
+    });
+    // console.log(highestSimilarityRole);
 
     //use highest similarity role_type to get avatar_role_type and avatar_mock_data
     const { data: avatarRoleTypeData, error: avatarRoleTypeError } =
@@ -112,10 +108,10 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error(avatarRoleTypeError.message);
     }
 
-    // (avatarRoleTypeData[0].avatar_mock_data[0])
-    // (avatarRoleTypeData[0].avatar_mock_data[0].dialect);
+    // console.log(avatarRoleTypeData[0].avatar_mock_data[0])
+    // console.log(avatarRoleTypeData[0].avatar_mock_data[0].dialect);
 
-    avatarRoleTypeData[0].role_description;
+    console.log(avatarRoleTypeData[0].role_description);
     // const { data: avatarMockData, error: avatarMockDataError } =
     //     await supabaseClient
     //         .from("avatar_mock_data")
@@ -125,8 +121,9 @@ const handler = async (req: Request): Promise<Response> => {
     //     throw new Error(avatarMockDataError.message);
     // }
 
-   
-    //this is not a stream request
+    // console.log(avatarMockData)
+    // console.log(avatarRoleTypeData)
+    // send api request to openai
     const payload: OpenAIStreamPayload = {
       model: "gpt-3.5-turbo",
       messages: [
@@ -200,12 +197,12 @@ const handler = async (req: Request): Promise<Response> => {
 
     const content = await OpenAIStream(payload);
 
-    // ('hello')
+    // console.log('hello')
     // const content = completion.data.choices[0].message?.content;
     const content_lines = content?.split("\n");
 
-    content_lines;
-    // (content_lines);
+    console.log(content_lines);
+    // console.log(content_lines);
     if (!content_lines) {
       throw new Error("No response from OpenAI");
     }
@@ -213,7 +210,7 @@ const handler = async (req: Request): Promise<Response> => {
     const inputString = content_lines.join("");
 
     const result = JSON.parse(inputString);
-    // (result);
+    // console.log(result);
     const { data: taskData, error: taskError } = await supabaseClient
 
       .from("Tasks")
@@ -230,11 +227,9 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error(taskError.message);
     }
 
-    //insert taskData id into result
 
     result.task_id = taskData[0].id;
 
-    /// add all subtasks to database
 
     for (let i = 0; i < result.subtasks.length; i++) {
       const { data: subtaskData, error: subtaskError } = await supabaseClient
@@ -254,7 +249,6 @@ const handler = async (req: Request): Promise<Response> => {
         throw new Error(subtaskError.message);
       }
 
-      //insert subtaskData id into result
 
       result.subtasks[i].subtask_id = subtaskData[0].id;
     }
@@ -263,7 +257,7 @@ const handler = async (req: Request): Promise<Response> => {
     //     return path.split(".").reduce((acc, part) => acc && acc[part], obj);
     //     }
     // const response = destructure(result, "subtasks.0.subtask_id");
-    // (response);
+    // console.log(response);
     // return NextResponse.json({ response });
 
     // const destructure = {
@@ -273,7 +267,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // }
 
-    // (destructure);
+    // console.log(destructure);
     return NextResponse.json({ result });
   } catch (error: unknown) {
     if (error instanceof Error) {
