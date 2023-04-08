@@ -68,16 +68,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from("avatar_roles")
       .select("id,name, description_embeddings, description, role_type");
 
-    // if (roleError) {
-    //   console.error(roleError);
-    //   return res
-    //     .status(500)
-    //     .json({ error: "Error retrieving roles from database" });
-    // }
-
-    //parse description embeddings tusing json
-    //convert all to json
-    //  console.log(roleData[0].id)
+    
     const roleDataJson = roleData.map((role: any) => {
       return {
         name: role.name,

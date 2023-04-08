@@ -98,7 +98,6 @@ export function Chat() {
                 ...prev,
               ]);
           }
-          //get default image and name has no
         );
 
         setFetching(false);
@@ -153,7 +152,6 @@ export function Chat() {
         userMessage: message,
       }),
     });
-
 
 
     if (!response.ok) {
