@@ -68,7 +68,6 @@ const handler = async (req: Request): Promise<Response> => {
       .from("avatar_roles")
       .select("id,name, description_embeddings, description, role_type");
 
-    
     const roleDataJson = roleData.map((role: any) => {
       return {
         name: role.name,
@@ -79,9 +78,9 @@ const handler = async (req: Request): Promise<Response> => {
       };
     });
 
-    // console.log(roleDataJson.id)
-    // console.log(roleData[0].description_embeddings)
-    // console.log(embeddings)
+    // (roleDataJson.id)
+    // (roleData[0].description_embeddings)
+    // (embeddings)
     const roleMatchData = roleDataJson.map((role: any) => {
       return {
         role_id: role.role_id,
@@ -92,27 +91,31 @@ const handler = async (req: Request): Promise<Response> => {
       };
     });
 
-    // console.log(roleMatchData);
+    // (roleMatchData);
 
-    const highestSimilarityRole = roleMatchData.reduce((acc:any, curr:any) => {
-      return curr.similarity > acc.similarity ? curr : acc;
-    });
-    // console.log(highestSimilarityRole);
+    const highestSimilarityRole = roleMatchData.reduce(
+      (acc: any, curr: any) => {
+        return curr.similarity > acc.similarity ? curr : acc;
+      }
+    );
+    // (highestSimilarityRole);
 
     //use highest similarity role_type to get avatar_role_type and avatar_mock_data
     const { data: avatarRoleTypeData, error: avatarRoleTypeError } =
       await supabaseClient
         .from("avatar_role_type")
-        .select(`id, role_description, avatar_mock_data (id,name,dialect,vocabulary,image_url, dialect)`)
+        .select(
+          `id, role_description, avatar_mock_data (id,name,dialect,vocabulary,image_url, dialect)`
+        )
         .eq("id", highestSimilarityRole.role_type);
     if (avatarRoleTypeError) {
       throw new Error(avatarRoleTypeError.message);
     }
 
-    // console.log(avatarRoleTypeData[0].avatar_mock_data[0])
-    // console.log(avatarRoleTypeData[0].avatar_mock_data[0].dialect);
+    // (avatarRoleTypeData[0].avatar_mock_data[0])
+    // (avatarRoleTypeData[0].avatar_mock_data[0].dialect);
 
-    console.log(avatarRoleTypeData[0].role_description);
+    avatarRoleTypeData[0].role_description;
     // const { data: avatarMockData, error: avatarMockDataError } =
     //     await supabaseClient
     //         .from("avatar_mock_data")
@@ -122,9 +125,8 @@ const handler = async (req: Request): Promise<Response> => {
     //     throw new Error(avatarMockDataError.message);
     // }
 
-    // console.log(avatarMockData)
-    // console.log(avatarRoleTypeData)
-    // send api request to openai
+   
+    //this is not a stream request
     const payload: OpenAIStreamPayload = {
       model: "gpt-3.5-turbo",
       messages: [
@@ -140,7 +142,7 @@ const handler = async (req: Request): Promise<Response> => {
             ". You will speak with the following dialect:" +
             avatarRoleTypeData[0].avatar_mock_data[0].dialect +
             ". Your vocabulary consists of:" +
-            avatarRoleTypeData[0].avatar_mock_data[0].vocabulary+
+            avatarRoleTypeData[0].avatar_mock_data[0].vocabulary +
             "I want you to act as a system-based task manager. You will do this role when a " +
             "user needs help organizing their tasks and subtasks. Your goal is to help users complete their tasks " +
             "on time and achieve their goals. You will be responsible for defining any task and associated subtask" +
@@ -198,12 +200,12 @@ const handler = async (req: Request): Promise<Response> => {
 
     const content = await OpenAIStream(payload);
 
-    // console.log('hello')
+    // ('hello')
     // const content = completion.data.choices[0].message?.content;
     const content_lines = content?.split("\n");
 
-    console.log(content_lines);
-    // console.log(content_lines);
+    content_lines;
+    // (content_lines);
     if (!content_lines) {
       throw new Error("No response from OpenAI");
     }
@@ -211,7 +213,7 @@ const handler = async (req: Request): Promise<Response> => {
     const inputString = content_lines.join("");
 
     const result = JSON.parse(inputString);
-    // console.log(result);
+    // (result);
     const { data: taskData, error: taskError } = await supabaseClient
 
       .from("Tasks")
@@ -261,7 +263,7 @@ const handler = async (req: Request): Promise<Response> => {
     //     return path.split(".").reduce((acc, part) => acc && acc[part], obj);
     //     }
     // const response = destructure(result, "subtasks.0.subtask_id");
-    // console.log(response);
+    // (response);
     // return NextResponse.json({ response });
 
     // const destructure = {
@@ -271,7 +273,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // }
 
-    // console.log(destructure);
+    // (destructure);
     return NextResponse.json({ result });
   } catch (error: unknown) {
     if (error instanceof Error) {

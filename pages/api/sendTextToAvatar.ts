@@ -39,7 +39,7 @@ export default async function sendTextToAvatar(
       {
         query_embedding: userEmbeddingCurrent.data.data[0].embedding,
         match_threshold: 0.7, // Choose an appropriate threshold for your data
-        match_count: 8, // Ch
+        match_count: 6, // Ch
         session_user_id: hardCodedUserId,
         session_avatar_id: hardCodedAvatarId,
       }
