@@ -31,7 +31,6 @@ function Home() {
         }
 
         const data = await response.json();
-        console.log(data.results, "this is data");
         if (data.results.length === 0) {
           setStopFetchingTasks(true);
         }
@@ -47,7 +46,6 @@ function Home() {
           ]);
         });
 
-        console.log(data);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -55,7 +53,6 @@ function Home() {
       }
     };
     fetchTaskHistory();
-    console.log("offset", offset);
   }, [offset]);
 
   const generateTasks = () => {
@@ -74,7 +71,6 @@ function Home() {
         return res.json();
       })
       .then((data) => {
-        console.log(data.result);
         setTasks((prev) => [data.result, ...prev]);
         setGen(false);
       })
@@ -103,9 +99,6 @@ function Home() {
           throw new Error(res.statusText);
         }
         return res.json();
-      })
-      .then((data) => {
-        console.log(data);
       })
       .catch((error) => {
         console.error(error);

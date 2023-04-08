@@ -58,7 +58,6 @@ export function ChatLine({
   if (!content) {
     return null;
   }
-  console.log("Default Avatar: ", defaultAvatar)
   const formatteMessage = convertNewLines(content);
   return (
     

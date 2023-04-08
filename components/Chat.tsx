@@ -2,7 +2,6 @@ import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./ChatLine";
 import { InputMessage } from "./InputMessage";
 import { ViewportList } from "react-viewport-list";
-//react virtualized
 
 export const initialMessages: ChatGPTMessage[] = [
   {
@@ -28,7 +27,6 @@ export function Chat() {
 
     if (lastMessage && messagesEndRef.current && !hasScrolledToBottom) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      console.log("scrolling to", messagesEndRef.current);
       setHasScrolledToBottom(true);
       if (offset <= 1) {
         setHasScrolledToBottom(false);
@@ -43,7 +41,6 @@ export function Chat() {
             window.innerHeight
         ) {
           messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-          console.log("scrolling to", messagesEndRef.current);
         }
       }
     };
@@ -79,14 +76,10 @@ export function Chat() {
         }
 
         const data = await response.json();
-        // console.log(data);
-        // console.log('helloooo')
+
         data.chatHistoryData.forEach(
           (item: any) => {
-            console.log("item", item);
-            // console.log('helllllllll')
             if (item.imageUrl !== null) {
-                // console.log("item.imageUrl", item.imageUrl);
 
               setMessages((prev) => [
                 { role: "user", content: item.user_message },
@@ -130,7 +123,6 @@ export function Chat() {
         }
         //parse response to json
         const data = await response.json();
-        // console.log(data);
         setDefaultAvatar(data.image_url);
         setDefaultName(data.name);
       } catch (error) {
@@ -162,8 +154,7 @@ export function Chat() {
       }),
     });
 
-    // console.log("Edge function returned.");
-    // console.log("This is the response: ", response.body);
+
 
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -171,7 +162,6 @@ export function Chat() {
 
     // This data is a ReadableStream
     const data = response.body;
-    // console.log("This is the data: ", data);
     if (!data) {
       return;
     }
@@ -189,7 +179,6 @@ export function Chat() {
 
       lastMessage = lastMessage + chunkValue;
       const parsed = JSON.parse(lastMessage);
-    //   console.log("This is the parsed: ", parsed);
       setMessages([
         ...newMessages,
         {
