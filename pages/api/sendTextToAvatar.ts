@@ -73,14 +73,10 @@ export default async function sendTextToAvatar(
       };
     });
 
-    // console.log('hello')
-
-    // console.log(roleMatchData);
 
     const highestSimilarityRole = roleMatchData?.reduce((acc, curr) => {
       return curr.similarity > acc.similarity ? curr : acc;
     });
-    // console.log(highestSimilarityRole);
 
     //use highest similarity role_type to get avatar_role_type and avatar_mock_data
     const { data: avatarRoleTypeData, error: avatarRoleTypeError }: any =
@@ -94,9 +90,7 @@ export default async function sendTextToAvatar(
       throw new Error(avatarRoleTypeError.message);
     }
 
-    // console.log(avatarRoleTypeData[0].avatar_mock_data[0].image_url);
 
-    // console.log(avatarRoleTypeData[0].role_description);
     const similarChatHistory: string[] = [];
     if (sortedChatData) {
       for (const chat of sortedChatData) {
@@ -135,9 +129,7 @@ export default async function sendTextToAvatar(
     //remove\n from the string
     const chatHistoryStringNoNewLine = chatHistoryString.replace(/\n/g, " ");
 
-    // if (!avatarRoleTypeData[0]) {
-    //     throw new Error("No role description");
-    //     }
+
     if (avatarRoleTypeData[0]) {
       if (!avatarRoleTypeData[0].avatar_mock_data) {
         throw new Error("No role description");
@@ -148,7 +140,6 @@ export default async function sendTextToAvatar(
         throw new Error("No role description");
       }
 
-      // console.log(highestSimilarityRole?.description);
       const prompt =
         "Currently your name is " +
         avatarRoleTypeData[0].avatar_mock_data[0].name +
@@ -192,8 +183,7 @@ export default async function sendTextToAvatar(
         input: agentText,
       });
 
-      //   console.log(avatarRoleTypeData[0].avatar_mock_data[0].name);
-      //   console.log(avatarRoleTypeData[0].avatar_mock_data[0].image_url);
+
       const { data: insertedChatHistory } = await supabaseClient
         .from("Chat_History")
         .insert([
@@ -208,7 +198,6 @@ export default async function sendTextToAvatar(
         ])
         .select("id");
 
-      // console.log(insertedChatHistory);
       if (!insertedChatHistory) {
         throw new Error("Error inserting chat history");
       }
