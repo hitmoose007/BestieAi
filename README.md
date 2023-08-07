@@ -1,51 +1,75 @@
-# AI Chat GPT-3 example
+# Bestie AI - Chat with a Personality-Shifting AI Bot
 
-This example shows how to implement a simple chat bot using Next.js, API Routes, and [OpenAI ChatGPT API](https://beta.openai.com/docs/api-reference/completions/create).
+Welcome to the **Bestie AI** project repository! Bestie AI is an innovative chatbot powered by cutting-edge AI technology, designed to provide users with a unique and engaging conversational experience. The bot has the ability to switch personalities, remember conversations through embeddings, and even generate tasks and subtasks in a checklist manner based on the context of the conversation. This repository contains the source code and documentation for Bestie AI, built using OpenAPI and Next.js.
 
-### Components
+## Features
 
-- Next.js
-- OpenAI API (ChatGPT) - streaming
-- API Routes (Edge runtime) - streaming
+- **Personality-Shifting Conversations:** Bestie AI brings conversations to life by simulating different personalities, providing users with dynamic and engaging interactions.
 
-## How to Use
+- **Conversation Embeddings:** The AI bot can remember past conversations and retrieve context from previous interactions, enhancing the overall conversation experience.
 
-You can choose from one of the following two methods to use this repository:
+- **Task and Subtask Generation:** Bestie AI goes beyond traditional chatbots by assisting users in generating tasks and subtasks, organized in a checklist style, based on the ongoing conversation.
 
-### One-Click Deploy
+![ui](images/frontend.png)
+## Technologies Used
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples):
+- **OpenAPI:** Bestie AI's backend is built using OpenAPI, allowing for a standardized and well-documented API structure.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/examples/tree/main/solutions/ai-chatgpt&project-name=ai-chatgpt&repository-name=ai-chatgpt&env=OPENAI_API_KEY)
+- **Next.js:** The frontend of Bestie AI is developed using Next.js, providing a fast and dynamic user interface.
 
-### Clone and Deploy
+## Getting Started
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [pnpm](https://pnpm.io/installation) to bootstrap the example:
+Follow these steps to get started with Bestie AI on your local machine:
 
-```bash
-pnpm create next-app --example https://github.com/vercel/examples/tree/main/solutions/ai-chatgpt
-```
+1. **Clone the Repository:** Begin by cloning this repository to your local machine using the following command:
 
-#### Set up environment variables
+   ```bash
+   git clone https://github.com/your-username/bestie-ai.git
+   ```
 
-Rename [`.env.example`](.env.example) to `.env.local`:
+2. **Install Dependencies:** Navigate to the project directory and install the required dependencies for both the frontend and the backend:
 
-```bash
-cp .env.example .env.local
-```
+   ```bash
+   cd bestie-ai
+   cd frontend
+   npm install
 
-then, update `OPENAI_API_KEY` with your [OpenAI](https://beta.openai.com/account/api-keys) secret key.
+   cd ../backend
+   npm install
+   ```
 
-Next, run Next.js in development mode:
+3. **Run the Application:** Start the frontend and backend servers simultaneously:
 
-```bash
-pnpm dev
-```
+   ```bash
+   cd frontend
+   npm run dev
 
-The app should be up and running at http://localhost:3000.
+   cd ../backend
+   npm start
+   ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=edge-middleware-eap) ([Documentation](https://nextjs.org/docs/deployment)).
+4. **Access Bestie AI:** Open your web browser and go to `http://localhost:3000` to start chatting with Bestie AI and explore its features.
 
-## typescript supabase command to create types
+## API Documentation
 
-npx supabase gen types typescript --project-id fijznrzhrlanavbkigzu --schema public > lib/db_types.ts
+The API documentation for Bestie AI can be found in the [`api-docs`](./api-docs) directory. It provides detailed information about the available endpoints, request and response structures, and usage examples.
+
+## Contributing
+
+We welcome contributions to Bestie AI from the community! If you'd like to contribute, please follow these steps:
+
+1. Fork the repository and create a new branch for your feature or bug fix.
+
+2. Make your changes and ensure that the code passes all tests.
+
+3. Submit a pull request to the `main` branch of this repository.
+
+## License
+
+Bestie AI is released under the [MIT License](./LICENSE).
+
+## Contact
+
+For any questions, suggestions, or issues related to Bestie AI, please [open an issue](https://github.com/your-username/bestie-ai/issues) on GitHub.
+
+Thank you for using Bestie AI, and we hope you enjoy engaging with our personality-shifting AI bot!
